@@ -1,46 +1,57 @@
 <script setup lang="ts">
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
-const textRef = ref(null);
+const wrapperRef = ref(null);
+const mainTextRef = ref(null);
 const outlineOneRef = ref(null);
 const outlineTwoRef = ref(null);
 const outlineThreeRef = ref(null);
 const outlineFourRef = ref(null);
 
 const timeline = ref(null);
+const scrollTrigger = ref(null);
 
 onMounted(() => {
   if (timeline.value) return;
 
   timeline.value = gsap
     .timeline({ paused: true })
-    .to(outlineOneRef.value, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
+    .to(outlineOneRef.value.textRef, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
     .to(
-      outlineOneRef.value,
+      outlineOneRef.value.textRef,
       { scale: 1, duration: 0.75, ease: "power2.inOut" },
       "<+=0"
     )
-    .to(outlineTwoRef.value, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
+    .to(outlineTwoRef.value.textRef, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
     .to(
-      outlineTwoRef.value,
+      outlineTwoRef.value.textRef,
       { scale: 1, duration: 0.75, ease: "power2.inOut" },
       "<+=0"
     )
-    .to(outlineThreeRef.value, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
+    .to(
+      outlineThreeRef.value.textRef,
+      { opacity: 0.4, duration: 0.3 },
+      "<+=0.1"
+    )
 
     .to(
-      outlineThreeRef.value,
+      outlineThreeRef.value.textRef,
       { scale: 1, duration: 0.75, ease: "power2.inOut" },
       "<+=0"
     )
-    .to(outlineFourRef.value, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
+    .to(outlineFourRef.value.textRef, { opacity: 0.4, duration: 0.3 }, "<+=0.1")
 
     .to(
-      outlineFourRef.value,
+      outlineFourRef.value.textRef,
       { scale: 1, duration: 0.75, ease: "power2.inOut" },
       "<+=0.0"
     )
-    .to(textRef.value, { opacity: 1 }, "-=0.5");
+    .to(mainTextRef.value.textRef, { opacity: 1 }, "-=0.5");
+
+  setTimeout(() => {
+    startTimeline();
+  }, 1000);
 });
 
 const startTimeline = () => {
@@ -54,65 +65,16 @@ const startTimeline = () => {
   <ZoomInTextScroller>
     <div
       class="relative h-screen w-screen bg-gradient-to-br from-gray-800 to-gray-900"
-      @click="startTimeline"
     >
       <div
-        class="absolute top-6/12 left-6/12 z-10 w-max-content -translate-x-6/12 -translate-y-6/12"
+        class="absolute top-6/12 left-6/12 h-full w-full -translate-x-6/12 -translate-y-6/12"
+        ref="wrapperRef"
       >
-        <h1
-          class="font-geomanist text-9xl uppercase text-teal-500 opacity-0"
-          ref="textRef"
-        >
-          Zoom In Text
-        </h1>
-      </div>
-      <div
-        class="text-outline absolute top-6/12 left-6/12 w-max-content -translate-x-6/12 -translate-y-6/12"
-      >
-        <h1
-          ref="outlineOneRef"
-          class="font-geomanist text-9xl uppercase text-gray-50 opacity-0"
-          style="transform: scale(4)"
-          data-speed="0.95"
-        >
-          Zoom In Text
-        </h1>
-      </div>
-      <div
-        class="text-outline absolute top-6/12 left-6/12 w-max-content -translate-x-6/12 -translate-y-6/12"
-      >
-        <h1
-          ref="outlineTwoRef"
-          class="font-geomanist text-9xl uppercase text-gray-50 opacity-0"
-          style="transform: scale(4)"
-          data-speed="0.9"
-        >
-          Zoom In Text
-        </h1>
-      </div>
-      <div
-        class="text-outline absolute top-6/12 left-6/12 w-max-content -translate-x-6/12 -translate-y-6/12"
-      >
-        <h1
-          ref="outlineThreeRef"
-          class="font-geomanist text-9xl uppercase text-gray-50 opacity-0"
-          style="transform: scale(4)"
-          data-speed="0.85"
-        >
-          Zoom In Text
-        </h1>
-      </div>
-      <div
-        class="text-outline absolute top-6/12 left-6/12 w-max-content -translate-x-6/12 -translate-y-6/12"
-      >
-        <h1
-          ref="outlineFourRef"
-          class="font-geomanist text-9xl uppercase text-gray-50 opacity-0"
-          style="transform: scale(4)"
-          data-speed="0.8"
-        >
-          Zoom In Text
-        </h1>
+        <ZoomInTextMainText ref="mainTextRef" />
+        <ZoomInTextOutlineText ref="outlineOneRef" :speed="0.95" />
+        <ZoomInTextOutlineText ref="outlineTwoRef" :speed="0.9" />
+        <ZoomInTextOutlineText ref="outlineThreeRef" :speed="0.85" />
+        <ZoomInTextOutlineText ref="outlineFourRef" :speed="0.8" />
       </div>
     </div>
     <div
