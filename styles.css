@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Tabular";
+  src: url("/assets/fonts/Tabular/Tabular-Bold.woff2") format("woff2"),
+    url("/assets/fonts/Tabular/Tabular-Bold.woff") format("woff"),
+    url("/assets/fonts/Tabular/Tabular-Bold.eot") format("eot"),
+    url("/assets/fonts/Tabular/Tabular-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geomanist";
+  src: url("/assets/fonts/Geomanist/geomanist-bold-webfont.woff2")
+      format("woff2"),
+    url("/assets/fonts/Geomanist/geomanist-bold-webfont.woff") format("woff"),
+    url("/assets/fonts/Geomanist/geomanist-bold-webfont.eot") format("eot"),
+    url("/assets/fonts/Geomanist/geomanist-bold-webfont.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
