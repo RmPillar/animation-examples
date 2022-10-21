@@ -52,7 +52,7 @@ onMounted(() => {
     class="flex h-screen w-screen items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500"
   >
     <h1
-      class="font-sans w-6/12 text-6xl font-bold text-gray-50"
+      class="font-sans w-10/12 text-4xl font-bold text-gray-50 md:text-6xl lg:w-6/12"
       style="opacity: 0"
       ref="textRef"
     >
