@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 const wrapperRef = ref(null);
 const mainTextRef = ref(null);
@@ -10,7 +9,6 @@ const outlineThreeRef = ref(null);
 const outlineFourRef = ref(null);
 
 const timeline = ref(null);
-const scrollTrigger = ref(null);
 
 onMounted(() => {
   if (timeline.value) return;
@@ -77,12 +75,6 @@ const startTimeline = () => {
         <ZoomInTextOutlineText ref="outlineFourRef" :speed="0.8" />
       </div>
     </div>
-    <div
-      class="h-screen w-screen bg-gradient-to-tr from-gray-800 to-gray-900"
-    ></div>
-    <div
-      class="h-screen w-screen bg-gradient-to-br from-gray-800 to-gray-900"
-    ></div>
     <div
       class="h-screen w-screen bg-gradient-to-tr from-gray-800 to-gray-900"
     ></div>
