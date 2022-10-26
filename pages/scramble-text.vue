@@ -44,29 +44,42 @@ onMounted(() => {
 });
 
 const scrambleTick = () => {
+  // Get a slice of text that will be scrambled
   const charStart = charIndex.value - 5 < 0 ? 0 : charIndex.value;
   const charEnd =
     charIndex.value - 5 < 0 ? charIndex.value + 1 : charIndex.value + 5;
   const charSlice = splitText.value.slice(charStart, charEnd);
 
-  const randomChars = charSlice.map((char, index) => {
-    if (char === " ") {
-      return " ";
-    } else {
-      const randomNumber = Math.floor(Math.random() * charArray.length);
-      return charArray[randomNumber];
-    }
-  });
+  // Map through CharSlice array to create array of random characters
+  const randomChars = charSlice
+    .map((char, index) => {
+      // If character is a space, ignore
+      if (char === " ") {
+        return " ";
+      } else {
+        const randomNumber = Math.floor(Math.random() * charArray.length);
+        return charArray[randomNumber];
+      }
+    })
+    .join("");
 
+  // Get all characters in string before the start of the charSlice array and join them back together
   let setChars = splitText.value.slice(0, charStart).join("");
 
-  scrambledTextRef.value.innerHTML = `${setChars}${randomChars.join("")}`;
+  // Set text with scrambled letters
+  scrambledTextRef.value.innerHTML = `${setChars}${randomChars}`;
+  // Increment scrambleIndex
   scrambleIndex.value++;
 
+  // Every letter gets scrambled twice before moving on to the next letter
+  // current character index gets incremented and scrambleIndex gets reset
   if (scrambleIndex.value >= 2) {
     charIndex.value++;
     scrambleIndex.value = 0;
   }
+
+  // If the character index is less than the length of the string
+  // Wait 10 ms and call this function again
   if (charIndex.value <= splitText.value.length) {
     setTimeout(() => {
       scrambleTick();
