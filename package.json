@@ -8,6 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@studio-freight/lenis": "^0.2.21",
     "gsap": "npm:@gsap/business"
   },
   "devDependencies": {

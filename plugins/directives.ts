@@ -43,15 +43,12 @@ const getOptions = (options) => {
     },
   };
 
-  console.log(optionsWithDefaults);
   const scrollTriggerOptions = optionsWithDefaults.scrollTrigger;
   const scrambleOptions = {
     speed: optionsWithDefaults.speed ?? 5,
     chars: optionsWithDefaults.chars ?? charArray,
     iterations: optionsWithDefaults.iterations ?? 5,
   };
-
-  console.log(scrollTriggerOptions, scrambleOptions);
 
   return { scrollTriggerOptions, scrambleOptions };
 };
