@@ -29,7 +29,8 @@ const getRouteName = (route) => {
       <div class="grid grid-cols-4 gap-20 py-108">
         <a
           :href="route.path"
-          v-for="route in router.options.routes"
+          v-for="(route,index) in router.options.routes"
+          :key="index"
           class="rounded-xl border-2 border-gray-50 py-32 px-20 text-center text-4xl text-gray-50"
           >{{ getRouteName(route) }}</a
         >
