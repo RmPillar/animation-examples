@@ -17,6 +17,8 @@ onMounted(() => {
 
   requestAnimationFrame(raf);
 });
+
+defineExpose({ scroller });
 </script>
 
 <template>

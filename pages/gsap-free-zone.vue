@@ -31,7 +31,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <GsapFreeZoneScroller>
+  <StructureScroller>
     <section>
       <div
         class="flex h-screen w-screen flex-col items-center justify-center bg-red-500"
@@ -81,7 +81,7 @@ onMounted(() => {
         />
       </div>
     </section>
-  </GsapFreeZoneScroller>
+  </StructureScroller>
 </template>
 
 <style lang="postcss">

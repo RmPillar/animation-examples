@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@studio-freight/lenis": "^0.2.21",
-    "gsap": "npm:@gsap/business"
+    "gsap": "npm:@gsap/business",
+    "lodash.throttle": "^4.1.1",
+    "pixi.js": "^7.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.12",
