@@ -41,6 +41,7 @@ export class ImageDisplacement {
     this.getDisplacementImage();
 
     this.createDisplacementTimeline();
+    this.createDisplacementHover();
   }
 
   // get and set canvas dimensions
@@ -124,6 +125,36 @@ export class ImageDisplacement {
         },
         0
       );
+  }
+
+  createDisplacementHover() {
+    this.el.addEventListener(
+      "mousemove",
+      throttle(this.handleDisplacementHover.bind(this), 100)
+    );
+    this.el.addEventListener("mouseleave", this.resetDisplacement.bind(this));
+  }
+
+  destroyDisplacementHover() {
+    this.el.removeEventListener(
+      "mousemove",
+      throttle(this.handleDisplacementHover.bind(this), 100)
+    );
+    this.el.removeEventListener(
+      "mouseleave",
+      this.resetDisplacement.bind(this)
+    );
+  }
+
+  handleDisplacementHover(e) {
+    console.log("hello");
+    const x = Math.min(e.clientX / 20, 75);
+    const y = Math.min(e.clientY / 20, 75);
+    gsap.to(this.filter.scale, { x, y });
+  }
+
+  resetDisplacement() {
+    gsap.to(this.filter.scale, { x: 0, y: 0 });
   }
 
   setupScrollDisplacement(scroller: any) {

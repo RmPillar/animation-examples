@@ -4,6 +4,7 @@ import { ImageDisplacement } from "~/utils/ImageDisplacement";
 const imageRef = ref(null);
 const canvasRef = ref(null);
 const scrollerRef = ref(null);
+const imageDisplacements = ref([]);
 
 const images = [
   "/images/kratos.webp",
@@ -24,8 +25,14 @@ const resetDisplacementFilter = () => {
 };
 
 onMounted(() => {
-  const imageDisplacements = images.map((image, index) => {
+  imageDisplacements.value = images.map((image, index) => {
     return new ImageDisplacement(imageRef.value[index], canvasRef.value[index]);
+  });
+});
+
+onBeforeUnmount(() => {
+  imageDisplacements.value.forEach((displacement) => {
+    displacement.destroyDisplacementHover();
   });
 });
 </script>
@@ -37,7 +44,7 @@ onMounted(() => {
       v-for="(image, index) in images"
       :key="index"
     >
-      <div class="relative aspect-[4/5] w-4/12">
+      <div class="relative aspect-[4/5] w-10/12 sm:w-8/12 lg:w-4/12">
         <div
           :data-image="image"
           data-displacement-map="/displacement/displacement-liquid.png"

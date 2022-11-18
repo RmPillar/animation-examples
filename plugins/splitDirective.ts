@@ -1,4 +1,4 @@
-import { SplitText } from "~~/utils/Splitting";
+import { SplitText } from "../utils/Splitting";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("splitText", {
