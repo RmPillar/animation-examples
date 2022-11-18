@@ -4,8 +4,6 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { gsap } from "gsap";
 import throttle from "lodash.throttle";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export class ImageDisplacement {
   el: HTMLElement;
   canvas: HTMLCanvasElement;
@@ -17,6 +15,8 @@ export class ImageDisplacement {
   observer: IntersectionObserver;
   intersecting: boolean;
   constructor(el, canvas) {
+    gsap.registerPlugin(ScrollTrigger);
+
     if (!el || !canvas) return;
 
     this.el = el;

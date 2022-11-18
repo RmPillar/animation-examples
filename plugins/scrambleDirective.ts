@@ -1,8 +1,6 @@
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const charArray = [
   "a",
   "b",
@@ -136,6 +134,8 @@ const scrambleTick = (
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("scramble", {
     mounted(el, binding) {
+      gsap.registerPlugin(ScrollTrigger);
+
       const { scrambleOptions, scrollTriggerOptions } = getOptions(
         binding.value
       );
