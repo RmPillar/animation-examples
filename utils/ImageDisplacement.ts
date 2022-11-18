@@ -40,8 +40,10 @@ export class ImageDisplacement {
 
     this.getDisplacementImage();
 
-    this.createDisplacementTimeline();
-    this.createDisplacementHover();
+    setTimeout(() => {
+      this.createDisplacementTimeline();
+      this.createDisplacementHover();
+    }, 500);
   }
 
   // get and set canvas dimensions
