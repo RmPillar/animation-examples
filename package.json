@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "@studio-freight/lenis": "^0.2.21",
-    "gsap": "npm:@gsap/business"
+    "gsap": "npm:@gsap/business",
+    "lodash.throttle": "^4.1.1",
+    "pixi.js": "^7.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.12",
-    "nuxt": "3.0.0-rc.12",
+    "nuxt": "3.0.0",
     "postcss": "^8.4.17",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",

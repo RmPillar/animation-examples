@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Lenis from "@studio-freight/lenis";
 
-const scroller = ref(null);
+const scroller = ref<Lenis | null>(null);
 
-const raf = (time) => {
-  scroller.value.raf(time);
-  requestAnimationFrame(raf);
+const raf = (time: number) => {
+  if (scroller.value) {
+    scroller.value.raf(time);
+    requestAnimationFrame(raf);
+  }
 };
 
 onMounted(() => {
@@ -17,6 +19,8 @@ onMounted(() => {
 
   requestAnimationFrame(raf);
 });
+
+defineExpose({ scroller });
 </script>
 
 <template>
