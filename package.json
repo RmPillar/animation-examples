@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.12",
-    "nuxt": "3.0.0-rc.12",
+    "nuxt": "3.0.0",
     "postcss": "^8.4.17",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",

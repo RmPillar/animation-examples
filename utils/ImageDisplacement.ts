@@ -1,7 +1,10 @@
 import * as PIXI from "pixi.js";
 import { DisplacementFilter } from "@pixi/filter-displacement";
-
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { gsap } from "gsap";
+import throttle from "lodash.throttle";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export class ImageDisplacement {
   el: HTMLElement;
@@ -11,6 +14,8 @@ export class ImageDisplacement {
   canvasWidth: number;
   canvasHeight: number;
   displacementTimeline: GSAPTimeline;
+  observer: IntersectionObserver;
+  intersecting: boolean;
   constructor(el, canvas) {
     if (!el || !canvas) return;
 
@@ -85,7 +90,11 @@ export class ImageDisplacement {
 
   createDisplacementTimeline() {
     this.displacementTimeline = gsap.timeline({
-      paused: true,
+      scrollTrigger: {
+        trigger: this.el,
+        start: "top center",
+        once: true,
+      },
     });
 
     this.displacementTimeline
@@ -115,9 +124,34 @@ export class ImageDisplacement {
         },
         0
       );
+  }
 
-    setTimeout(() => {
-      this.displacementTimeline.play();
-    }, 200);
+  setupScrollDisplacement(scroller: any) {
+    this.observer = new IntersectionObserver(
+      this.watchIntersection.bind(this),
+      {
+        threshold: 0.5,
+      }
+    );
+
+    this.observer.observe(this.el);
+
+    scroller.on(
+      "scroll",
+      throttle(({ velocity }) => {
+        if (this.intersecting) {
+          gsap.to(this.filter.scale, {
+            y: Math.min(velocity * 3, 100),
+          });
+        }
+      }),
+      100
+    );
+  }
+
+  watchIntersection(entries) {
+    entries.forEach(({ isIntersecting }) => {
+      this.intersecting = isIntersecting;
+    });
   }
 }
