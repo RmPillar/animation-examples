@@ -132,7 +132,7 @@ export class ImageDisplacement {
   createDisplacementHover() {
     this.el.addEventListener(
       "mousemove",
-      throttle(this.handleDisplacementHover.bind(this), 100)
+      this.handleDisplacementHover.bind(this)
     );
     this.el.addEventListener("mouseleave", this.resetDisplacement.bind(this));
   }
@@ -140,7 +140,7 @@ export class ImageDisplacement {
   destroyDisplacementHover() {
     this.el.removeEventListener(
       "mousemove",
-      throttle(this.handleDisplacementHover.bind(this), 100)
+      this.handleDisplacementHover.bind(this)
     );
     this.el.removeEventListener(
       "mouseleave",
