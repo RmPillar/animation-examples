@@ -11,6 +11,7 @@ export class ImageDisplacement {
   el: HTMLElement;
   canvas: HTMLCanvasElement;
   pixiApp: PIXI.Application;
+  image: PIXI.Sprite;
   filter: DisplacementFilter;
   canvasWidth: number;
   canvasHeight: number;
@@ -18,7 +19,6 @@ export class ImageDisplacement {
   observer: IntersectionObserver;
   intersecting: boolean;
   scroller: Lenis;
-  cursor: PIXI.Circle;
   container: PIXI.Container;
   constructor(el, canvas, scroller) {
     if (!el || !canvas) return;
@@ -54,6 +54,8 @@ export class ImageDisplacement {
     this.getDisplacementImage();
     this.createDisplacementTimeline();
     this.createDisplacementScroll(this.scroller);
+
+    this.resize();
   }
 
   // get and set canvas dimensions
@@ -68,11 +70,11 @@ export class ImageDisplacement {
     // If no image exists, then return
     if (!imageFile) return;
     // Create a Pixi sprite from image
-    const image = PIXI.Sprite.from(imageFile);
+    this.image = PIXI.Sprite.from(imageFile);
     // Set image dimensions
-    this.setImageDimensions(image, imageFile);
+    this.setImageDimensions(this.image, imageFile);
     // Add image to Pixi app stage
-    this.container.addChild(image);
+    this.container.addChild(this.image);
   }
 
   getDisplacementImage() {
@@ -194,6 +196,13 @@ export class ImageDisplacement {
   watchIntersection(entries) {
     entries.forEach(({ isIntersecting }) => {
       this.intersecting = isIntersecting;
+    });
+  }
+
+  resize() {
+    window.addEventListener("resize", () => {
+      this.getCanvasDimensions();
+      this.setImageDimensions(this.image, this.image.name);
     });
   }
 }
