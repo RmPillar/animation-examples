@@ -46,7 +46,7 @@ export class ImageGlitchFilter {
 
     this.setupIntersectionObserver();
 
-    this.createImageFilter();
+    this.createGlitchImageFilter();
 
     this.resize();
   }
@@ -83,12 +83,12 @@ export class ImageGlitchFilter {
     image.position.x = this.canvasWidth / 2;
   }
 
-  createImageFilter() {
+  createGlitchImageFilter() {
     // Create Glitch filter
     this.filter = new GlitchFilter({
       slices: 0, // Start with 0 slices
       fillMode: 2, // Loop glitches
-      offset: 100, // Glitch slices offset by 100
+      offset: 50, // Glitch slices offset by 100
       red: [0, 0], // Start with red channel offset at 0
       green: [0, 0], // Start with green channel offset at 0
       blue: [0, 0], // Start with blue channel offset at 0
