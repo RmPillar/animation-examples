@@ -3,6 +3,9 @@ import { DisplacementFilter } from "@pixi/filter-displacement";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { gsap } from "gsap";
 import throttle from "lodash.throttle";
+import Lenis from "@studio-freight/lenis";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export class ImageDisplacement {
   el: HTMLElement;
@@ -14,13 +17,15 @@ export class ImageDisplacement {
   displacementTimeline: GSAPTimeline;
   observer: IntersectionObserver;
   intersecting: boolean;
-  constructor(el, canvas) {
-    gsap.registerPlugin(ScrollTrigger);
-
+  scroller: Lenis;
+  cursor: PIXI.Circle;
+  container: PIXI.Container;
+  constructor(el, canvas, scroller) {
     if (!el || !canvas) return;
 
     this.el = el;
     this.canvas = canvas;
+    this.scroller = scroller;
 
     this.createPixiApp();
   }
@@ -36,14 +41,19 @@ export class ImageDisplacement {
       resizeTo: this.el,
     });
 
+    this.pixiApp.stage.interactive = true;
+    this.container = new PIXI.Container();
+
+    this.pixiApp.stage.addChild(this.container);
+
+    this.canvas.style.opacity = "0";
+
+    this.createDisplacementHover();
     this.getImage();
 
     this.getDisplacementImage();
-
-    setTimeout(() => {
-      this.createDisplacementTimeline();
-      this.createDisplacementHover();
-    }, 500);
+    this.createDisplacementTimeline();
+    this.createDisplacementScroll(this.scroller);
   }
 
   // get and set canvas dimensions
@@ -62,7 +72,7 @@ export class ImageDisplacement {
     // Set image dimensions
     this.setImageDimensions(image, imageFile);
     // Add image to Pixi app stage
-    this.pixiApp.stage.addChild(image);
+    this.container.addChild(image);
   }
 
   getDisplacementImage() {
@@ -70,9 +80,9 @@ export class ImageDisplacement {
     const displacementMap = PIXI.Sprite.from(displacementMapFile);
     this.filter = new PIXI.filters.DisplacementFilter(displacementMap);
 
-    this.pixiApp.stage.filterArea = this.pixiApp.screen;
-    this.pixiApp.stage.filters = [this.filter];
-    this.pixiApp.stage.addChild(displacementMap);
+    this.container.filterArea = this.pixiApp.screen;
+    this.container.filters = [this.filter];
+    this.container.addChild(displacementMap);
 
     // Set displacement image dimensions
     this.setImageDimensions(displacementMap, displacementMapFile);
@@ -149,7 +159,6 @@ export class ImageDisplacement {
   }
 
   handleDisplacementHover(e) {
-    console.log("hello");
     const x = Math.min(e.clientX / 20, 75);
     const y = Math.min(e.clientY / 20, 75);
     gsap.to(this.filter.scale, { x, y });
@@ -159,11 +168,11 @@ export class ImageDisplacement {
     gsap.to(this.filter.scale, { x: 0, y: 0 });
   }
 
-  setupScrollDisplacement(scroller: any) {
+  createDisplacementScroll(scroller: any) {
     this.observer = new IntersectionObserver(
       this.watchIntersection.bind(this),
       {
-        threshold: 0.5,
+        threshold: 0.1,
       }
     );
 

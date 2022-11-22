@@ -1,38 +1,59 @@
-<script setup>
+<script setup lang="ts">
 import { ImageDisplacement } from "~/utils/ImageDisplacement";
+import StructureScroller from "~/components/Structure/Scroller.vue";
 
-const imageRef = ref(null);
-const canvasRef = ref(null);
-const scrollerRef = ref(null);
-const imageDisplacements = ref([]);
+const imageRef = ref<HTMLDivElement[]>([]);
+const canvasRef = ref<HTMLCanvasElement[]>([]);
+const scrollerRef = ref<typeof StructureScroller | null>(null);
+const imageDisplacements = ref<ImageDisplacement[]>([]);
 
 const images = [
-  "/images/kratos.webp",
-  "/images/freya.webp",
-  "/images/atreus.webp",
-  "/images/mimir.webp",
-  "/images/thor.webp",
+  {
+    image: "/images/kratos.webp",
+    displacement: "/displacement/displacement-liquid.png",
+  },
+  {
+    image: "/images/freya.webp",
+    displacement: "/displacement/map-01.jpeg",
+  },
+  {
+    image: "/images/atreus.webp",
+    displacement: "/displacement/map-02.jpeg",
+  },
+  {
+    image: "/images/mimir.webp",
+    displacement: "/displacement/map-03.jpeg",
+  },
+  {
+    image: "/images/thor.webp",
+    displacement: "/displacement/map-04.jpeg",
+  },
+  {
+    image: "/images/tyr.webp",
+    displacement: "/displacement/map-05.jpeg",
+  },
 ];
 
-const shiftDisplacementFilter = (e) => {
-  // const x = Math.min(e.clientX / 20, 50);
-  // const y = Math.min(e.clientY / 20, 50);
-  // gsap.to(filter.value.scale, { x, y });
-};
-
-const resetDisplacementFilter = () => {
-  // gsap.to(filter.value.scale, { x: 0, y: 0 });
-};
-
 onMounted(() => {
-  imageDisplacements.value = images.map((image, index) => {
-    return new ImageDisplacement(imageRef.value[index], canvasRef.value[index]);
+  nextTick(() => {
+    // @ts-ignore
+    imageDisplacements.value = images.map((image, index) => {
+      if (imageRef.value && scrollerRef.value) {
+        return new ImageDisplacement(
+          imageRef.value[index],
+          canvasRef.value[index],
+          scrollerRef.value.scroller
+        );
+      }
+    });
   });
 });
 
 onBeforeUnmount(() => {
   imageDisplacements.value.forEach((displacement) => {
-    displacement.destroyDisplacementHover();
+    if (displacement) {
+      displacement.destroyDisplacementHover();
+    }
   });
 });
 </script>
@@ -46,8 +67,8 @@ onBeforeUnmount(() => {
     >
       <div class="relative aspect-[4/5] w-10/12 sm:w-8/12 lg:w-4/12">
         <div
-          :data-image="image"
-          data-displacement-map="/displacement/displacement-liquid.png"
+          :data-image="image.image"
+          :data-displacement-map="image.displacement"
           class="absolute inset-0 h-full w-full"
           ref="imageRef"
         />
