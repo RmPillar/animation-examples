@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Lenis from "@studio-freight/lenis";
-import { LiquidFilter } from "~~/utils/LiquidFilter";
+import { DisplacementFilter } from "~~/utils/DisplacementFilter";
 
 const props = defineProps<{
   image: {
@@ -13,12 +13,12 @@ const props = defineProps<{
 const imageRef = ref(null);
 const canvasRef = ref(null);
 
-const liquidFilter = ref<LiquidFilter | null>(null);
+const displacementFilter = ref<DisplacementFilter | null>(null);
 
 onMounted(() => {
   nextTick(() => {
     if (imageRef.value && props.scroller) {
-      liquidFilter.value = new LiquidFilter(
+      displacementFilter.value = new DisplacementFilter(
         imageRef.value,
         canvasRef.value,
         props.scroller
@@ -28,8 +28,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  if (liquidFilter.value) {
-    liquidFilter.value.destroyDisplacementHover();
+  if (displacementFilter.value) {
+    displacementFilter.value.destroyDisplacementHover();
   }
 });
 </script>

@@ -1,15 +1,14 @@
 import * as PIXI from "pixi.js";
-import { DisplacementFilter } from "@pixi/filter-displacement";
+import { DisplacementFilter as PixiDisplacementFilter } from "@pixi/filter-displacement";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { gsap } from "gsap";
 import throttle from "lodash.throttle";
-import Lenis from "@studio-freight/lenis";
 import { PixiFilter } from "./PixiFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export class LiquidFilter extends PixiFilter {
-  filter: DisplacementFilter;
+export class DisplacementFilter extends PixiFilter {
+  filter: PixiDisplacementFilter;
   displacementTimeline: GSAPTimeline;
   constructor(el, canvas, scroller) {
     super(el, canvas, scroller);
@@ -112,6 +111,10 @@ export class LiquidFilter extends PixiFilter {
         if (this.intersecting) {
           gsap.to(this.filter.scale, {
             y: Math.min(velocity * 3, 100),
+          });
+        } else {
+          gsap.set(this.filter.scale, {
+            y: 1,
           });
         }
       }),

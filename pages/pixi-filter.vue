@@ -44,7 +44,7 @@ onMounted(() => {
       v-for="(image, index) in images"
       :key="index"
     >
-      <PixiFilterLiquid :image="image" :scroller="scroller" />
+      <PixiFilterDisplacement :image="image" :scroller="scroller" />
     </div>
     <div
       class="flex h-screen w-screen flex-col items-center justify-center bg-indigo-500"
