@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { ImageDisplacement } from "~/utils/ImageDisplacement";
 import StructureScroller from "~/components/Structure/Scroller.vue";
 import Lenis from "@studio-freight/lenis";
-import GlitchFilterImage from "../components/LiquidImage/GlitchFilterImage.vue";
 
-const imageRef = ref<HTMLDivElement[]>([]);
-const canvasRef = ref<HTMLCanvasElement[]>([]);
 const scrollerRef = ref<typeof StructureScroller | null>(null);
 const scroller = ref<Lenis | null>(null);
 
@@ -48,12 +44,12 @@ onMounted(() => {
       v-for="(image, index) in images"
       :key="index"
     >
-      <LiquidFilterImage :image="image" :scroller="scroller" />
+      <PixiFilterLiquid :image="image" :scroller="scroller" />
     </div>
     <div
       class="flex h-screen w-screen flex-col items-center justify-center bg-indigo-500"
     >
-      <GlitchFilterImage :image="images[0]" />
+      <PixiFilterGlitch :image="images[0]" />
     </div>
   </StructureScroller>
 </template>

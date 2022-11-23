@@ -1,36 +1,21 @@
 <script setup lang="ts">
 import Lenis from "@studio-freight/lenis";
-import { ImageDisplacement } from "~/utils/ImageDisplacement";
+import { GlitchFilter } from "~/utils/GlitchFilter";
 
 const props = defineProps<{
   image: {
     image: string;
     displacement: string;
   };
-  scroller: Lenis | null;
 }>();
 
 const imageRef = ref(null);
 const canvasRef = ref(null);
 
-const imageDisplacement = ref<ImageDisplacement | null>(null);
+const glitchFilter = ref<GlitchFilter | null>(null);
 
 onMounted(() => {
-  nextTick(() => {
-    if (imageRef.value && props.scroller) {
-      imageDisplacement.value = new ImageDisplacement(
-        imageRef.value,
-        canvasRef.value,
-        props.scroller
-      );
-    }
-  });
-});
-
-onBeforeUnmount(() => {
-  if (imageDisplacement.value) {
-    imageDisplacement.value.destroyDisplacementHover();
-  }
+  glitchFilter.value = new GlitchFilter(imageRef.value, canvasRef.value);
 });
 </script>
 
@@ -38,7 +23,6 @@ onBeforeUnmount(() => {
   <div class="relative aspect-[4/5] w-10/12 sm:w-8/12 lg:w-4/12">
     <div
       :data-image="image.image"
-      :data-displacement-map="image.displacement"
       class="absolute inset-0 h-full w-full"
       ref="imageRef"
     />

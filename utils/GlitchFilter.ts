@@ -1,91 +1,24 @@
 import * as PIXI from "pixi.js";
-import { GlitchFilter } from "@pixi/filter-glitch";
+import { GlitchFilter as PixiGlitchFilter } from "@pixi/filter-glitch";
+import { PixiFilter } from "./PixiFilter";
 
-export class ImageGlitchFilter {
-  el: HTMLElement;
-  canvas: HTMLCanvasElement;
-  pixiApp: PIXI.Application;
-  canvasWidth: number;
-  canvasHeight: number;
-  displacementTimeline: GSAPTimeline;
-  observer: IntersectionObserver;
-  intersecting: boolean;
-  container: PIXI.Container;
-  filter: GlitchFilter;
+export class GlitchFilter extends PixiFilter {
+  filter: PixiGlitchFilter;
   startTime: number;
   slices: number;
   glitchSpacing: number;
   glitchDuration: number;
-  image: PIXI.Sprite;
   constructor(el, canvas) {
-    if (!el || !canvas) return;
-
-    this.el = el;
-    this.canvas = canvas;
-
-    this.createPixiApp();
-  }
-
-  createPixiApp() {
-    this.getCanvasDimensions();
-    // Create a Pixi Application
-    this.pixiApp = new PIXI.Application({
-      view: this.canvas,
-      width: this.canvasWidth,
-      height: this.canvasHeight,
-      resolution: window.devicePixelRatio,
-      resizeTo: this.el,
-    });
-
-    this.pixiApp.stage.interactive = true;
-    this.container = new PIXI.Container();
-
-    this.pixiApp.stage.addChild(this.container);
-
-    this.getImage();
-
-    this.setupIntersectionObserver();
+    super(el, canvas);
 
     this.createGlitchImageFilter();
 
-    this.resize();
-  }
-
-  // get and set canvas dimensions
-  getCanvasDimensions() {
-    this.canvasWidth = this.el.clientWidth;
-    this.canvasHeight = this.el.clientHeight;
-  }
-
-  getImage() {
-    // Get image url from data-image attribute on element
-    const imageFile = this.el.getAttribute("data-image");
-    // If no image exists, then return
-    if (!imageFile) return;
-    // Create a Pixi sprite from image
-    this.image = PIXI.Sprite.from(imageFile);
-    // Set image dimensions
-    this.setImageDimensions(this.image, imageFile);
-    // Add image to Pixi app stage
-    this.container.addChild(this.image);
-  }
-
-  setImageDimensions(image, name) {
-    // Set image name
-    image.name = name;
-    // Set image dimensions to match canvas dimensions
-    image.width = this.canvasWidth;
-    image.height = this.canvasHeight;
-    // Set image anchor point to center
-    image.anchor.set(0.5);
-    // set image position to center of canvas
-    image.position.y = this.canvasHeight / 2;
-    image.position.x = this.canvasWidth / 2;
+    this.createIntersectionObserver(0.25, this.intersectionCallback.bind(this));
   }
 
   createGlitchImageFilter() {
     // Create Glitch filter
-    this.filter = new GlitchFilter({
+    this.filter = new PixiGlitchFilter({
       slices: 0, // Start with 0 slices
       fillMode: 2, // Loop glitches
       offset: 50, // Glitch slices offset by 100
@@ -95,8 +28,6 @@ export class ImageGlitchFilter {
     });
     // Set image filter to glitch filter
     this.image.filters = [this.filter];
-    // Add image element to intersection observer
-    this.observer.observe(this.el);
     // Set start time to now
     this.startTime = Date.now();
     // Set time between glitches to 3s
@@ -149,24 +80,11 @@ export class ImageGlitchFilter {
     this.glitchDuration = Math.random() * 2000; // Set glitch duration to random time between 0 and 2 seconds
   }
 
-  setupIntersectionObserver() {
-    this.observer = new IntersectionObserver(
-      this.watchIntersection.bind(this),
-      {
-        threshold: 0.25,
-      }
-    );
-  }
-
-  watchIntersection(entries) {
-    // When element is onscreen, set this.intersecting to true
-    entries.forEach(({ isIntersecting }) => {
-      this.intersecting = isIntersecting;
-      if (!this.intersecting) {
-        // If element is no longer onscreen, reset glitch filter properties
-        this.resetGlitchFilter();
-      }
-    });
+  intersectionCallback() {
+    if (!this.intersecting) {
+      // If element is no longer onscreen, reset glitch filter properties
+      this.resetGlitchFilter();
+    }
   }
 
   resize() {
