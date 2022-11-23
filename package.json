@@ -8,6 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pixi/filter-glitch": "^5.0.0",
     "@studio-freight/lenis": "^0.2.21",
     "gsap": "npm:@gsap/business",
     "lodash.throttle": "^4.1.1",
