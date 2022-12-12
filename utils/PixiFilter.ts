@@ -9,21 +9,20 @@ gsap.registerPlugin(ScrollTrigger);
 export class PixiFilter {
   el: HTMLElement;
   canvas: HTMLCanvasElement;
-  pixiApp: PIXI.Application;
-  image: PIXI.Sprite;
-  canvasWidth: number;
-  canvasHeight: number;
-  observer: IntersectionObserver;
-  intersecting: boolean;
-  scroller: Lenis;
-  container: PIXI.Container;
-  constructor(el, canvas, scroller?) {
-    if (!el || !canvas) return;
-
+  pixiApp?: PIXI.Application;
+  image?: PIXI.Sprite;
+  canvasWidth?: number;
+  canvasHeight?: number;
+  observer?: IntersectionObserver;
+  intersecting?: boolean;
+  scroller: Lenis | undefined;
+  container?: PIXI.Container;
+  constructor(el: HTMLElement, canvas: HTMLCanvasElement, scroller?: Lenis) {
     this.el = el;
     this.canvas = canvas;
     this.scroller = scroller;
 
+    if (!el || !canvas) return;
     this.createPixiApp();
   }
 
