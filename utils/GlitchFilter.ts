@@ -3,12 +3,12 @@ import { GlitchFilter as PixiGlitchFilter } from "@pixi/filter-glitch";
 import { PixiFilter } from "./PixiFilter";
 
 export class GlitchFilter extends PixiFilter {
-  filter: PixiGlitchFilter;
-  startTime: number;
-  slices: number;
-  glitchSpacing: number;
-  glitchDuration: number;
-  constructor(el, canvas) {
+  filter?: PixiGlitchFilter;
+  startTime?: number;
+  slices?: number;
+  glitchSpacing?: number;
+  glitchDuration?: number;
+  constructor(el: HTMLElement, canvas: HTMLCanvasElement) {
     super(el, canvas);
 
     this.createGlitchImageFilter();
