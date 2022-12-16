@@ -3,13 +3,13 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 
 import vertexShader from "~/shaders/ThreeImage/vertex.glsl";
-import fragmentShader from "~/shaders/ThreeImage/fragment.glsl";
 
 import * as dat from "lil-gui";
 
 export class Figure {
   scene: THREE.Scene;
   imageEl: HTMLImageElement;
+  fragmentShader: string;
 
   loader: THREE.TextureLoader;
 
@@ -38,9 +38,15 @@ export class Figure {
 
   gui: dat.GUI;
 
-  constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
+  constructor(
+    scene: THREE.Scene,
+    image: HTMLImageElement,
+    fragmentShader: string,
+    gui: dat.GUI
+  ) {
     this.scene = scene;
     this.imageEl = image;
+    this.fragmentShader = fragmentShader;
     this.gui = gui;
 
     if (!this.scene || !this.imageEl) return;
@@ -98,7 +104,7 @@ export class Figure {
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
+      fragmentShader: this.fragmentShader,
       defines: {
         PR: window.devicePixelRatio.toFixed(1),
       },

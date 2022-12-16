@@ -2,11 +2,15 @@
 import * as THREE from "three";
 import { Figure } from "./Figure";
 
+import gloopFragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
+import shiftFragmentShader from "~/shaders/ThreeImage/shift/fragment.glsl";
+
 import * as dat from "lil-gui";
 
 export class Scene {
   canvas: HTMLCanvasElement;
   image: HTMLImageElement;
+  imageTwo: HTMLImageElement;
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
@@ -16,9 +20,14 @@ export class Scene {
 
   gui: dat.GUI;
 
-  constructor(el: HTMLCanvasElement, image: HTMLImageElement) {
+  constructor(
+    el: HTMLCanvasElement,
+    image: HTMLImageElement,
+    imageTwo: HTMLImageElement
+  ) {
     this.canvas = el;
     this.image = image;
+    this.imageTwo = imageTwo;
 
     this.gui = new dat.GUI();
 
@@ -27,7 +36,19 @@ export class Scene {
     this.initScene();
     this.initCamera();
 
-    this.figure = new Figure(this.scene, this.image, this.gui);
+    this.figure = new Figure(
+      this.scene,
+      this.image,
+      gloopFragmentShader,
+      this.gui
+    );
+
+    this.figure = new Figure(
+      this.scene,
+      this.imageTwo,
+      shiftFragmentShader,
+      this.gui
+    );
 
     this.update();
   }

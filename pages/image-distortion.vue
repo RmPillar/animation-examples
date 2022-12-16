@@ -20,7 +20,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="flex h-screen w-screen flex-col items-center justify-center bg-slate-500"
+    class="flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-slate-500"
   >
     <div class="relative aspect-[4/5] w-10/12 sm:w-8/12 lg:w-4/12">
       <img
