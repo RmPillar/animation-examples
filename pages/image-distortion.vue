@@ -29,7 +29,7 @@ onMounted(() => {
         class="pointer-events-none opacity-0"
       />
       <img
-        src="/images/atreus.jpeg"
+        src="/images/atreus.webp"
         ref="imageTwoRef"
         class="pointer-events-none absolute inset-0 h-full w-full opacity-0"
       />
