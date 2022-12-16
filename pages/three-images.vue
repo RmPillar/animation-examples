@@ -22,7 +22,7 @@ onMounted(() => {
       <img
         data-src="/images/spiderman-001.webp"
         src="/images/spiderman-001.webp"
-        data-hover="/images/spiderman-002.webp"
+        data-hover="/images/spiderman-003.webp"
         class="h-full w-full opacity-0"
         ref="imageRef"
       />

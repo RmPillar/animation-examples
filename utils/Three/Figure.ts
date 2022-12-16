@@ -86,9 +86,9 @@ export class Figure {
       uImageHover: { value: this.hoverTexture },
       uMouse: { value: this.mouse },
       uTime: { value: 0 },
-      uSize: { value: 0.05 },
-      uNoise: { value: 5.0 },
-      uNoiseSpeed: { value: 0.1 },
+      uSize: { value: 0.04 },
+      uNoise: { value: 10.0 },
+      uNoiseSpeed: { value: 0.2 },
       uBlur: { value: 0.1 },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
