@@ -5,7 +5,6 @@ const scrambleOptions = ref({
   scrollTrigger: {
     start: "top bottom-=200px",
     once: true,
-    onEnter: () => console.log("hello"),
   },
 });
 </script>

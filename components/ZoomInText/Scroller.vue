@@ -3,11 +3,10 @@ import gsap from "gsap";
 import ScrollSmoother from "gsap/dist/ScrollSmoother";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-
-const scroller = ref(null);
+const scroller = ref<ScrollSmoother | null>(null);
 
 onMounted(() => {
+  gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
   if (scroller.value) return;
 
   scroller.value = ScrollSmoother.create({
