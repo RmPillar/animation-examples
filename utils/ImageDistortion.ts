@@ -1,170 +1,228 @@
 // @ts-ignore
 import * as THREE from "three";
 
-import imageDistortionVertexShader from "~/shaders/imageDistortion/vertex.glsl";
-import imageDistortionFragmentShader from "~/shaders/imageDistortion/fragment.glsl";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 
-type ViewportType = {
-  width: number;
-  height: number;
-  aspectRatio: number;
-};
-
-type UniformsType = {
-  uTexture: {
-    value: THREE.texture;
-  };
-  uOffset: {
-    value: THREE.Vector2;
-  };
-  uAlpha: {
-    value: number | null;
-  };
-};
+import vertextShader from "~/shaders/imageDistortion/vertex.glsl";
+import fragmentShader from "~/shaders/imageDistortion/fragment.glsl";
 
 export class ImageDistortion {
-  container: HTMLDivElement;
   canvas: HTMLCanvasElement;
-  renderer: THREE.WebGLRenderer;
+  image: HTMLImageElement;
+  imageTwo: HTMLImageElement;
+
+  sizes: {
+    width: number;
+    height: number;
+  } = {
+    width: 0,
+    height: 0,
+  };
+
   scene: THREE.Scene;
-  camera: THREE.Camera;
-  clock: THREE.Clock;
+
+  texture: THREE.Texture;
+  textureTwo: THREE.Texture;
   textureLoader: THREE.TextureLoader;
-  texture: THREE.texture;
-  position: THREE.Vector3;
-  scale: THREE.Vector3;
+
   geometry: THREE.PlaneGeometry;
   material: THREE.ShaderMaterial;
-  plane: THREE.Mesh;
-  uniforms: UniformsType;
-  viewport: ViewportType;
+  mesh: THREE.Mesh;
 
-  constructor(container: HTMLDivElement, canvas: HTMLCanvasElement) {
-    this.container = container;
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+
+  composer: THREE.EffectComposer;
+
+  mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
+
+  clock: THREE.Clock;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    image: HTMLImageElement,
+    imageTwo: HTMLImageElement
+  ) {
     this.canvas = canvas;
+    this.image = image;
+    this.imageTwo = imageTwo;
 
-    this.uniforms = {
-      uTexture: {
-        value: null,
-      },
-      uOffset: {
-        value: null,
-      },
-      uAlpha: {
-        value: null,
-      },
-    };
-    this.viewport = {
-      width: 0,
-      height: 0,
-      aspectRatio: 1,
+    if (!this.canvas || !this.image) return;
+
+    this.sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
     };
 
-    if (!canvas || !container) return;
-    console.log("hello");
+    this.loadTexture(this.init);
 
     this.init();
+    this.resize();
   }
 
-  init() {
-    this.getViewportDimensions();
+  async init() {
+    this.getSizes();
 
-    this.setupScene();
-
-    this.loadTexture();
-  }
-
-  setupScene() {
-    // renderer
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      canvas: this.canvas,
-    });
-    this.renderer.setPixelRatio = window.devicePixelRatio;
-
-    // scene
     this.scene = new THREE.Scene();
 
-    // clock
-    this.clock = new THREE.Clock();
+    this.createMaterial();
 
-    // camera
-    this.camera = new THREE.PerspectiveCamera(
-      45,
-      this.viewport.aspectRatio,
-      0.1,
-      100
-    );
-    this.camera.position.set(0, 0, 3);
+    this.createCamera();
+
+    this.createRenderer();
+
+    // this.createEffects();
+    this.addMouseMove();
+
+    this.clock = new THREE.Clock();
 
     this.tick();
   }
 
-  async loadTexture() {
-    this.textureLoader = new THREE.TextureLoader();
-    const image = this.canvas.getAttribute("data-image");
+  loadTexture(func: () => void) {
+    if (!this.textureLoader) this.textureLoader = new THREE.TextureLoader();
 
-    if (!image) return;
+    const textPromises = [
+      this.textureLoader.load(this.image.src),
+      this.textureLoader.load(this.imageTwo.src),
+    ];
 
-    this.texture = await this.textureLoader.load(
-      image,
-      this.createMaterial.bind(this)
-    );
+    Promise.all(textPromises).then((textures) => {
+      this.texture = textures[0];
+      this.textureTwo = textures[1];
+
+      func();
+    });
   }
 
   createMaterial() {
-    this.position = new THREE.Vector3(0, 0, 0);
-    this.scale = new THREE.Vector3(1, 1, 1);
+    if (!this.texture || !this.scene || !this.sizes) return;
+
+    // Geometry
     this.geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
-    this.uniforms = {
-      uTexture: {
-        //texture data
-        value: this.texture,
-      },
-      uOffset: {
-        //distortion strength
-        value: new THREE.Vector2(0.0, 0.0),
-      },
-      uAlpha: {
-        //opacity
-        value: 1,
-      },
-    };
-
+    // Material
     this.material = new THREE.ShaderMaterial({
-      uniforms: this.uniforms,
-      vertexShader: imageDistortionVertexShader,
-      fragmentShader: imageDistortionFragmentShader,
-      transparent: true,
+      vertexShader: vertextShader,
+      fragmentShader: fragmentShader,
+      uniforms: {
+        uFrequency: { value: new THREE.Vector2(10, 5) },
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color("orange") },
+        uTexture: { value: this.texture },
+        uTextureHover: { value: this.textureTwo },
+        uMouse: { value: this.mouse },
+        uResolution: {
+          value: new THREE.Vector2(this.sizes.width, this.sizes.height),
+        },
+      },
     });
 
-    this.plane = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.plane);
-
-    this.scale = new THREE.Vector3(this.viewport.aspectRatio, 1, 1);
-    this.plane.scale.copy(this.scale);
+    // Mesh
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.scale.set(this.image.width / this.image.height, 1, 1);
+    this.scene.add(this.mesh);
   }
 
-  getViewportDimensions() {
-    const width = this.canvas.clientWidth;
-    const height = this.canvas.clientWidth;
+  createCamera() {
+    if (!this.scene || !this.sizes) return;
 
-    this.viewport = {
-      width,
-      height,
-      aspectRatio: width / height,
-    };
+    this.camera = new THREE.PerspectiveCamera(
+      75,
+      this.sizes.width / this.sizes.height,
+      0.1,
+      100
+    );
+
+    this.camera.position.set(0, 0, 0.65);
+
+    this.scene.add(this.camera);
+  }
+
+  createRenderer() {
+    if (!this.canvas || !this.sizes) return;
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true,
+      alpha: true,
+      premultipliedAlpha: false,
+    });
+
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }
+
+  createEffects() {
+    if (!this.renderer || !this.camera || !this.scene) return;
+
+    this.composer = new EffectComposer(this.renderer);
+
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+
+    const glitchPass = new GlitchPass();
+
+    this.composer.addPass(glitchPass);
+  }
+
+  addMouseMove() {
+    this.canvas.addEventListener("mousemove", (e) => {
+      if (!this.sizes) return;
+
+      this.mouse = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+    });
   }
 
   tick() {
+    if (!this.clock || !this.material || !this.scene || !this.camera) return;
+
     const elapsedTime = this.clock.getElapsedTime();
+
+    // Update materials
+    this.material.uniforms.uTime.value = elapsedTime;
+
+    this.material.uniforms.uMouse.value = this.mouse;
 
     // Render
     this.renderer.render(this.scene, this.camera);
+    // this.composer.render(elapsedTime);
 
     // Call tick again on the next frame
     window.requestAnimationFrame(this.tick.bind(this));
+  }
+
+  resize() {
+    window.addEventListener("resize", () => {
+      if (!this.renderer || !this.camera || !this.mesh || !this.sizes) return;
+      // Update sizes
+      this.getSizes();
+
+      // Update camera
+      this.camera.aspect = this.sizes.width / this.sizes.height;
+      this.camera.updateProjectionMatrix();
+
+      // Update mesh
+      this.mesh.scale.set(this.image.width / this.image.height, 1, 1);
+
+      // Update renderer
+      this.renderer.setSize(this.sizes.width, this.sizes.height);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // // Update composer
+      // this.composer.setSize(this.sizes.width, this.sizes.height);
+      // this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    });
+  }
+
+  getSizes() {
+    this.sizes = {
+      width: this.canvas.offsetWidth,
+      height: this.canvas.offsetHeight,
+    };
   }
 }
