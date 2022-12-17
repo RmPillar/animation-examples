@@ -1,14 +1,14 @@
 // @ts-ignore
 import * as THREE from "three";
-import { gsap } from "gsap";
 
-import vertexShader from "~/shaders/ThreeImage/vertex.glsl";
+import vertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
 
 import * as dat from "lil-gui";
 
 export class Figure {
   scene: THREE.Scene;
   imageEl: HTMLImageElement;
+  vertexShader: string;
   fragmentShader: string;
 
   loader: THREE.TextureLoader;
@@ -20,18 +20,6 @@ export class Figure {
   material: THREE.MeshBasicMaterial;
   mesh: THREE.Mesh;
 
-  uniforms?: {
-    uTime: { value: number };
-    uImage: { value: THREE.Texture };
-    uImageHover: { value: THREE.Texture };
-    uMouse: { value: THREE.Vector2 };
-    uResolution: { value: THREE.Vector2 };
-    uSize: { value: number };
-    uNoise: { value: number };
-    uNoiseSpeed: { value: number };
-    uBlur: { value: number };
-  };
-
   sizes: THREE.Vector2;
   offset: THREE.Vector2;
   mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
@@ -41,26 +29,22 @@ export class Figure {
   constructor(
     scene: THREE.Scene,
     image: HTMLImageElement,
+    vertexShader: string,
     fragmentShader: string,
     gui: dat.GUI
   ) {
     this.scene = scene;
     this.imageEl = image;
     this.fragmentShader = fragmentShader;
+    this.vertexShader = vertexShader;
     this.gui = gui;
-
-    if (!this.scene || !this.imageEl) return;
-
-    this.initFigure();
-
-    this.addToGui();
   }
 
-  initFigure() {
+  async initFigure(uniforms) {
     this.loader = new THREE.TextureLoader();
 
-    this.texture = this.loader.load(this.imageEl.src);
-    this.hoverTexture = this.loader.load(
+    this.texture = await this.loader.load(this.imageEl.src);
+    this.hoverTexture = await this.loader.load(
       this.imageEl.getAttribute("data-hover")
     );
 
@@ -69,9 +53,7 @@ export class Figure {
 
     this.getSizes();
 
-    this.createMesh();
-
-    window.addEventListener("mousemove", this.onMouseMove.bind(this));
+    this.createMesh(uniforms);
   }
 
   getSizes() {
@@ -84,25 +66,20 @@ export class Figure {
     );
   }
 
-  createMesh() {
+  createMesh(uniforms) {
+    if (!uniforms) return;
+
     this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
-    this.uniforms = {
+    const newUniforms = {
+      ...uniforms,
       uImage: { value: this.texture },
       uImageHover: { value: this.hoverTexture },
       uMouse: { value: this.mouse },
-      uTime: { value: 0 },
-      uSize: { value: 0.04 },
-      uNoise: { value: 10.0 },
-      uNoiseSpeed: { value: 0.2 },
-      uBlur: { value: 0.1 },
-      uResolution: {
-        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-      },
     };
 
     this.material = new THREE.ShaderMaterial({
-      uniforms: this.uniforms,
+      uniforms: newUniforms,
       vertexShader: vertexShader,
       fragmentShader: this.fragmentShader,
       defines: {
@@ -119,41 +96,5 @@ export class Figure {
     this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
 
     this.scene.add(this.mesh);
-  }
-
-  onMouseMove(e: MouseEvent) {
-    gsap.to(this.mouse, {
-      x: (e.clientX / window.innerWidth) * 2 - 1,
-      y: -(e.clientY / window.innerHeight) * 2 + 1,
-    });
-
-    // gsap.to(this.mesh.rotation, {
-    //   x: this.mouse.y * 0.3,
-    //   y: this.mouse.y * (Math.PI / 6),
-    // });
-  }
-
-  addToGui() {
-    if (!this.gui || !this.uniforms) return;
-
-    this.gui
-      .add(this.uniforms.uSize, "value", 0, 0.1, 0.001)
-      .name("Cursor Size");
-
-    this.gui
-      .add(this.uniforms.uNoise, "value", 0, 30, 0.1)
-      .name("Noise Strength");
-
-    this.gui
-      .add(this.uniforms.uNoiseSpeed, "value", 0, 1, 0.001)
-      .name("Noise Speed");
-
-    this.gui.add(this.uniforms.uBlur, "value", 0, 0.5, 0.001).name("Blur");
-  }
-
-  update() {
-    if (!this.uniforms) return;
-
-    this.uniforms.uTime.value += 0.01;
   }
 }

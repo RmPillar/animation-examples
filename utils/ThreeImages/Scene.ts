@@ -1,9 +1,13 @@
 // @ts-ignore
 import * as THREE from "three";
-import { Figure } from "./Figure";
+import { GloopFigure } from "./GloopFigure";
+import { RevealFigure } from "./RevealFigure";
 
 import gloopFragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
-import shiftFragmentShader from "~/shaders/ThreeImage/shift/fragment.glsl";
+import gloopVertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
+
+import revealFragmentShader from "~/shaders/ThreeImage/reveal/fragment.glsl";
+import revealVertexShader from "~/shaders/ThreeImage/reveal/vertex.glsl";
 
 import * as dat from "lil-gui";
 
@@ -16,7 +20,8 @@ export class Scene {
   renderer: THREE.WebGLRenderer;
   camera: THREE.PerspectiveCamera;
 
-  figure?: Figure;
+  gloopFigure?: GloopFigure;
+  revealFigure?: RevealFigure;
 
   gui: dat.GUI;
 
@@ -36,17 +41,19 @@ export class Scene {
     this.initScene();
     this.initCamera();
 
-    this.figure = new Figure(
+    this.gloopFigure = new GloopFigure(
       this.scene,
       this.image,
+      gloopVertexShader,
       gloopFragmentShader,
       this.gui
     );
 
-    this.figure = new Figure(
+    this.revealFigure = new RevealFigure(
       this.scene,
       this.imageTwo,
-      shiftFragmentShader,
+      revealVertexShader,
+      revealFragmentShader,
       this.gui
     );
 
@@ -87,7 +94,8 @@ export class Scene {
   update() {
     this.renderer.render(this.scene, this.camera);
 
-    if (this.figure) this.figure.update();
+    if (this.gloopFigure) this.gloopFigure.update();
+    if (this.revealFigure) this.revealFigure.update();
 
     requestAnimationFrame(this.update.bind(this));
   }
