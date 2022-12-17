@@ -19,21 +19,21 @@ onMounted(() => {
 
 <template>
   <div class="flex h-screen w-screen items-center justify-center bg-slate-500">
-    <div class="relative w-10/12 sm:w-8/12 lg:w-3/12">
+    <div class="relative mr-100 aspect-[3/4] w-10/12 sm:w-8/12 lg:w-3/12">
       <img
         data-src="/images/spiderman-001.webp"
         data-hover="/images/spiderman-003.webp"
         src="/images/spiderman-001.webp"
-        class="h-full w-full opacity-0"
+        class="h-full w-full object-cover opacity-0"
         ref="imageRef"
       />
     </div>
-    <div class="relative w-10/12 sm:w-8/12 lg:w-3/12">
+    <div class="relative aspect-[3/4] w-10/12 sm:w-8/12 lg:w-3/12">
       <img
         data-src="/images/spiderman-002.webp"
         data-hover="/images/spiderman-003.webp"
         src="/images/spiderman-002.webp"
-        class="h-full w-full opacity-0"
+        class="h-full w-full object-cover opacity-0"
         ref="imageTwoRef"
       />
     </div>

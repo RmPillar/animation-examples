@@ -13,6 +13,7 @@ export class RevealFigure extends Figure {
     uBlur: { value: number };
     uTime: { value: number };
     uHoverProgress: { value: number };
+    uRatio: { value: number };
   };
 
   constructor(
@@ -43,6 +44,7 @@ export class RevealFigure extends Figure {
       uBlur: { value: 0.1 },
       uTime: { value: 0 },
       uHoverProgress: { value: -0.1 },
+      uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },

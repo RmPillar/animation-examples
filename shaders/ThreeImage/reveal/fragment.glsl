@@ -1,6 +1,7 @@
 uniform float uBlur;
 uniform float uTime;
 uniform float uHoverProgress;
+uniform float uRatio;
 
 uniform sampler2D uImage;
 uniform sampler2D uImageHover;
@@ -101,16 +102,20 @@ float snoise3(vec3 v)
   }
 
 void main() {
-  float offX = vUv.x + sin(vUv.y + uTime * 0.1);
-  float offY = vUv.y - (uTime * 0.1) - (cos(uTime * (0.1 / 100.0)) * 0.1);
+  // Adjust uv coordinates to match image aspect ratio and not stretch image
+  vec2 uv = vUv;
+  uv.y *= uRatio;
+  uv.y -= (0.5 - (1. / uRatio) * 0.5) * uRatio;
+
+  float offX = uv.x + sin(uv.y + uTime * 0.1);
+  float offY = uv.y - (uTime * 0.1) - (cos(uTime * (0.1 / 100.0)) * 0.1);
 
   float n = snoise3(vec3(offX, offY, uTime * 0.1) * 10.0) / 10.0;
 
+  float mask = step(uHoverProgress, ((uv.x + uv.y) / 2.0) + n);
 
-  float mask = step(uHoverProgress, ((vUv.x + vUv.y) / 2.0) + n);
-
-  vec4 image = texture2D(uImage, vUv);  
-  vec4 imageHover = texture2D(uImageHover, vUv);
+  vec4 image = texture2D(uImage, uv);  
+  vec4 imageHover = texture2D(uImageHover, uv);
 
   vec4 finalImage = mix(image, imageHover, mask);
 

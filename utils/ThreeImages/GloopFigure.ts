@@ -16,7 +16,10 @@ export class GloopFigure extends Figure {
     uNoise: { value: number };
     uNoiseSpeed: { value: number };
     uBlur: { value: number };
+    uRatio: { value: number };
   };
+
+  mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
 
   constructor(
     scene: THREE.Scene,
@@ -48,6 +51,7 @@ export class GloopFigure extends Figure {
       uNoise: { value: 10.0 },
       uNoiseSpeed: { value: 0.2 },
       uBlur: { value: 0.1 },
+      uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },

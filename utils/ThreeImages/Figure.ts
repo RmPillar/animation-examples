@@ -22,7 +22,6 @@ export class Figure {
 
   sizes: THREE.Vector2;
   offset: THREE.Vector2;
-  mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
 
   gui: dat.GUI;
 
@@ -75,7 +74,6 @@ export class Figure {
       ...uniforms,
       uImage: { value: this.texture },
       uImageHover: { value: this.hoverTexture },
-      uMouse: { value: this.mouse },
     };
 
     this.material = new THREE.ShaderMaterial({

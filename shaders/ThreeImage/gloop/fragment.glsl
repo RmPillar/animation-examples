@@ -5,6 +5,7 @@ uniform float uSize;
 uniform float uNoise;
 uniform float uNoiseSpeed;
 uniform float uBlur;
+uniform float uRatio;
 
 uniform sampler2D uImage;
 uniform sampler2D uImageHover;
@@ -121,15 +122,20 @@ void main() {
   vec2 circlePos = st + mouse;
   float c = circle(circlePos,uSize, 1.0) * 2.5;
 
-  float offX = vUv.x + sin(vUv.y + uTime * uNoiseSpeed);
-  float offY = vUv.y - (uTime * uNoiseSpeed) - (cos(uTime * (uNoiseSpeed / 100.0)) * 0.1);
+  // Adjust uv coordinates to match image aspect ratio and not stretch image
+  vec2 uv = vUv;
+  uv.y *= uRatio;
+  uv.y -= (0.5 - (1. / uRatio) * 0.5) * uRatio;
+
+  float offX = uv.x + sin(uv.y + uTime * uNoiseSpeed);
+  float offY = uv.y - (uTime * uNoiseSpeed) - (cos(uTime * (uNoiseSpeed / 100.0)) * 0.1);
 
   float n = snoise3(vec3(offX, offY, uTime * uNoiseSpeed) * uNoise) - 1.0;
 
   float finalMask = smoothstep(0.5 - uBlur, 0.5, n + c);
 
-  vec4 image = texture2D(uImage, vUv);
-  vec4 imageHover = texture2D(uImageHover, vUv);
+  vec4 image = texture2D(uImage, uv);
+  vec4 imageHover = texture2D(uImageHover, uv);
 
   vec4 finalImage = mix(image, imageHover, finalMask);
 
