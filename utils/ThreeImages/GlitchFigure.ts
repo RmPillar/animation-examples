@@ -29,6 +29,8 @@ export class GlitchFigure extends Figure {
   glitchDurationMax: number = 1000;
   glitchStartTime: number = Date.now();
 
+  isIntersecting: boolean = false;
+
   constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
 
@@ -37,6 +39,8 @@ export class GlitchFigure extends Figure {
     this.setUniforms();
 
     this.initFigure(this.uniforms);
+
+    this.setupObserver();
 
     this.addToGui();
   }
@@ -84,6 +88,11 @@ export class GlitchFigure extends Figure {
   setGlitch() {
     if (!this.uniforms) return;
 
+    if (!this.isIntersecting) {
+      this.uniforms.uEnableGlitch.value = 0.0;
+      return;
+    }
+
     const currentTime = Date.now();
 
     const deltaTime = currentTime - this.glitchStartTime;
@@ -104,17 +113,26 @@ export class GlitchFigure extends Figure {
     }
   }
 
+  setupObserver() {
+    if (!this.scene || !this.imageEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          this.isIntersecting = entry.isIntersecting;
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(this.imageEl);
+  }
+
   update() {
     if (!this.uniforms) return;
 
     this.uniforms.uTime.value += 0.01;
 
     this.setGlitch();
-
-    // this.uniforms.uEnableGlitch.value =
-    //   Math.random() * this.uniforms.uTime.value * this.glitchSpeed <
-    //   this.glitchRate
-    //     ? 1
-    //     : 0;
   }
 }

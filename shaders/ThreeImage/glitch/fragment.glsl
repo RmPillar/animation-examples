@@ -25,7 +25,7 @@ void main() {
   uv.y -= (0.5 - (1. / uRatio) * 0.5) * uRatio;
 
   // Adjust uv coordinates to seperate into glitch blocks and offset x and y coordinates
-	uv.x += (random((trunc(uv.y * uGlitchBlockSize) / uGlitchBlockSize) +	uTime) - 0.5) * uGlitchPower * uEnableGlitch * uGlitchXOffset;
+	uv.x += ((random((trunc(uv.y * uGlitchBlockSize) / uGlitchBlockSize) +	uTime) - 0.5)) * uGlitchPower * uEnableGlitch * uGlitchXOffset;
 	uv.y += (random((trunc(uv.y * uGlitchBlockSize) / uGlitchBlockSize) +	uTime) - 0.5) * uGlitchPower * uEnableGlitch * uGlitchYOffset;
 
   // Offset red and blue color channels
