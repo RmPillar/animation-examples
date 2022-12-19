@@ -25,11 +25,16 @@ const props = defineProps<{
           class="w-5/12"
           :class="section?.imageSide === 'left' ? 'ml-2/12' : 'mr-2/12'"
         >
-          <h2 class="mb-20 text-4xl text-gray-50">Lorem Ipsum Title Here</h2>
-          <p class="text-lg text-gray-50">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
+          <h2
+            v-if="section.heading"
+            class="mb-20 text-4xl text-gray-50"
+            v-text="section.heading"
+          ></h2>
+          <p
+            class="text-lg text-gray-50"
+            v-if="section.body"
+            v-text="section.body"
+          ></p>
         </div>
 
         <div class="relative w-5/12">

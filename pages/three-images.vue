@@ -8,13 +8,13 @@ const sceneRef = ref<Scene | null>(null);
 
 const imageContentData = [
   {
-    heading: "Lorem Ipsum Title Here",
+    heading: "Lorem Ipsum Glitch Title Here",
     body: " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: {
       src: "/images/spiderman-001.webp",
       hover: "/images/spiderman-003.webp",
       shape: "",
-      effect: "gloop",
+      effect: "glitch",
     },
     imageSide: "left",
   },
@@ -28,6 +28,17 @@ const imageContentData = [
       effect: "shape",
     },
     imageSide: "right",
+  },
+  {
+    heading: "Lorem Ipsum Title Here",
+    body: " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image: {
+      src: "/images/spiderman-001.webp",
+      hover: "/images/spiderman-003.webp",
+      shape: "",
+      effect: "gloop",
+    },
+    imageSide: "left",
   },
 ];
 

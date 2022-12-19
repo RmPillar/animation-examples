@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { GloopFigure } from "./GloopFigure";
 import { RevealFigure } from "./RevealFigure";
 import { ShapeFigure } from "./ShapeFigure";
+import { GlitchFigure } from "./GlitchFigure";
 
 import * as dat from "lil-gui";
 
@@ -89,6 +90,8 @@ export class Scene {
           ? GloopFigure
           : effect === "reveal"
           ? RevealFigure
+          : effect === "glitch"
+          ? GlitchFigure
           : ShapeFigure;
 
       return new FigureClass(this.scene, image, this.gui);
