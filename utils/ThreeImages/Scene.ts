@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as THREE from "three";
-import { GloopFigure } from "./GloopFigure";
+import { SmokeFigure } from "./SmokeFigure";
 import { RevealFigure } from "./RevealFigure";
 import { ShapeFigure } from "./ShapeFigure";
 import { GlitchFigure } from "./GlitchFigure";
@@ -15,7 +15,7 @@ export class Scene {
   camera: THREE.PerspectiveCamera;
 
   images: NodeListOf<HTMLImageElement>;
-  figures: (GloopFigure | RevealFigure | ShapeFigure)[];
+  figures: (SmokeFigure | RevealFigure | ShapeFigure)[];
 
   sizes: {
     width: number;
@@ -86,8 +86,8 @@ export class Scene {
     this.figures = Array.from(this.images).map((image: HTMLImageElement) => {
       const effect = image.dataset.effect;
       const FigureClass =
-        effect === "gloop"
-          ? GloopFigure
+        effect === "smoke"
+          ? SmokeFigure
           : effect === "reveal"
           ? RevealFigure
           : effect === "glitch"

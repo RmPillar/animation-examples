@@ -36,7 +36,7 @@ const imageContentData = [
       src: "/images/spiderman-001.webp",
       hover: "/images/spiderman-003.webp",
       shape: "",
-      effect: "gloop",
+      effect: "smoke",
     },
     imageSide: "left",
   },

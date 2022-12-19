@@ -13,7 +13,6 @@ uniform sampler2D uImageShape;
 
 varying vec2 vUv;
 
-
 void main() {
   // Adjust uv coordinates to match image aspect ratio and not stretch image
   vec2 uv = vUv;

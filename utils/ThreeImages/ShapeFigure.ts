@@ -76,5 +76,9 @@ export class ShapeFigure extends Figure {
     });
   }
 
-  update() {}
+  update() {
+    if (!this.uniforms) return;
+
+    this.uniforms.uTime.value += 0.01;
+  }
 }

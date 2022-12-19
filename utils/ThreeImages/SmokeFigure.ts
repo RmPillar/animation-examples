@@ -5,10 +5,10 @@ import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
-import fragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
-import vertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
+import fragmentShader from "~/shaders/ThreeImage/smoke/fragment.glsl";
+import vertexShader from "~/shaders/ThreeImage/smoke/vertex.glsl";
 
-export class GloopFigure extends Figure {
+export class SmokeFigure extends Figure {
   uniforms?: {
     uTime: { value: number };
     uImage: { value: THREE.Texture };
@@ -19,11 +19,13 @@ export class GloopFigure extends Figure {
     uNoise: { value: number };
     uNoiseSpeed: { value: number };
     uBlur: { value: number };
+    uOctaves: { value: number };
+    uSmokiness: { value: number };
     uRatio: { value: number };
   };
 
   mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
-  cursorSize: number = 0.04;
+  cursorSize: number = 0.05;
 
   constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
@@ -48,10 +50,12 @@ export class GloopFigure extends Figure {
       uMouse: { value: this.mouse },
       uTime: { value: 0 },
       uSize: { value: 0 },
-      uNoise: { value: 10.0 },
-      uNoiseSpeed: { value: 0.2 },
-      uBlur: { value: 0.1 },
+      uNoise: { value: 35.0 },
+      uNoiseSpeed: { value: 0.1 },
+      uBlur: { value: 0.0 },
       uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
+      uOctaves: { value: 5 },
+      uSmokiness: { value: 0.45 },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
@@ -61,12 +65,12 @@ export class GloopFigure extends Figure {
   addToGui() {
     if (!this.gui || !this.uniforms) return;
 
-    const folder = this.gui.addFolder("Gloop");
+    const folder = this.gui.addFolder("smoke");
 
-    folder.add(this.uniforms.uSize, "value", 0, 0.1, 0.001).name("Cursor Size");
+    folder.add(this, "cursorSize", 0, 0.1, 0.001).name("Cursor Size");
 
     folder
-      .add(this.uniforms.uNoise, "value", 0, 30, 0.1)
+      .add(this.uniforms.uNoise, "value", 0, 300, 0.1)
       .name("Noise Strength");
 
     folder
@@ -74,6 +78,10 @@ export class GloopFigure extends Figure {
       .name("Noise Speed");
 
     folder.add(this.uniforms.uBlur, "value", 0, 0.5, 0.001).name("Blur");
+    folder.add(this.uniforms.uOctaves, "value", 1, 10, 1).name("Octaves");
+    folder
+      .add(this.uniforms.uSmokiness, "value", 0.25, 1, 0.001)
+      .name("Smokiness");
   }
 
   onMouseMove(e: MouseEvent) {
@@ -88,7 +96,7 @@ export class GloopFigure extends Figure {
 
     gsap.to(this.uniforms?.uSize, {
       value: this.cursorSize,
-      duration: 0.5,
+      duration: 0.3,
     });
   }
 
@@ -97,7 +105,7 @@ export class GloopFigure extends Figure {
 
     gsap.to(this.uniforms?.uSize, {
       value: 0,
-      duration: 0.5,
+      duration: 0.3,
     });
   }
 

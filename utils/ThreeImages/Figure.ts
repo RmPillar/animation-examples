@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as THREE from "three";
 
-import vertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
+import vertexShader from "~/shaders/ThreeImage/smoke/vertex.glsl";
 
 import * as dat from "lil-gui";
 

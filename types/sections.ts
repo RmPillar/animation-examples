@@ -6,7 +6,7 @@ export type ImageContentType = {
       src: string;
       hover: string;
       shape: string;
-      effect: "gloop" | "reveal" | "shape";
+      effect: "smoke" | "reveal" | "shape";
     };
     imageSide: "left" | "right";
   };
