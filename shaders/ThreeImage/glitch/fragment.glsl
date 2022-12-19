@@ -28,7 +28,7 @@ void main() {
 	uv.x += (random((trunc(uv.y * uGlitchBlockSize) / uGlitchBlockSize) +	uTime) - 0.5) * uGlitchPower * uEnableGlitch * uGlitchXOffset;
 	uv.y += (random((trunc(uv.y * uGlitchBlockSize) / uGlitchBlockSize) +	uTime) - 0.5) * uGlitchPower * uEnableGlitch * uGlitchYOffset;
 
-  //  
+  // Offset red and blue color channels
   vec4 pixelColor = texture2D(uImage, uv);
 	pixelColor.r = mix(pixelColor.r, texture2D(uImage, uv + vec2(uGlitchColorOffset, 0.0)).r,	uEnableGlitch);
 	pixelColor.b = mix(pixelColor.b, texture2D(uImage, uv + vec2(-uGlitchColorOffset, 0.0 )).b,	uEnableGlitch);
