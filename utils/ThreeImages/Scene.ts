@@ -6,9 +6,11 @@ import { ShapeFigure } from "./ShapeFigure";
 import { GlitchFigure } from "./GlitchFigure";
 
 import * as dat from "lil-gui";
+import Lenis from "@studio-freight/lenis";
 
 export class Scene {
   canvas: HTMLCanvasElement;
+  scroller: Lenis;
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
@@ -24,8 +26,9 @@ export class Scene {
   scrollY: number;
   gui: dat.GUI;
 
-  constructor(el: HTMLCanvasElement) {
+  constructor(el: HTMLCanvasElement, scroller: Lenis) {
     this.canvas = el;
+    this.scroller = scroller;
 
     this.images = document.querySelectorAll(".three-image");
     this.figures = [];
@@ -99,10 +102,11 @@ export class Scene {
   }
 
   initScroller() {
-    this.scrollY = window.scrollY;
+    if (!this.scroller) return;
 
-    window.addEventListener("scroll", () => {
-      this.scrollY = window.scrollY;
+    // @ts-ignore
+    this.scroller.on("scroll", ({ scroll }: { scroll: number }) => {
+      this.scrollY = scroll;
     });
   }
 

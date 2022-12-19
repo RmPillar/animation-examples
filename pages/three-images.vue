@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Scene } from "~~/utils/ThreeImages/Scene";
+import StructureScroller from "~~/components/Structure/Scroller.vue";
 const canvasRef = ref(null);
-const sectionOneImageRef = ref([]);
-const sectionTwoImageRef = ref(null);
+const scrollerRef = ref<typeof StructureScroller | null>(null);
 
 const sceneRef = ref<Scene | null>(null);
 
@@ -52,23 +52,25 @@ const widescreenImageData = {
 };
 
 onMounted(() => {
-  if (!canvasRef.value) return;
-
-  sceneRef.value = new Scene(canvasRef.value);
+  if (!canvasRef.value || !scrollerRef.value) return;
+  console.log(scrollerRef.value.scroller);
+  sceneRef.value = new Scene(canvasRef.value, scrollerRef.value.scroller);
 });
 </script>
 
 <template>
-  <div class="flex flex-col gap-y-164 bg-slate-500 py-100">
-    <ThreeImagesImageContent
-      :section="section"
-      v-for="(section, index) in imageContentData"
-      :key="index"
-    />
-    <ThreeImagesWidescreenImage :section="widescreenImageData" />
-    <canvas
-      class="pointer-events-none fixed inset-0 z-10 h-full w-full"
-      ref="canvasRef"
-    />
-  </div>
+  <StructureScroller ref="scrollerRef">
+    <div class="flex flex-col gap-y-164 bg-slate-500 py-100">
+      <ThreeImagesImageContent
+        :section="section"
+        v-for="(section, index) in imageContentData"
+        :key="index"
+      />
+      <ThreeImagesWidescreenImage :section="widescreenImageData" />
+      <canvas
+        class="pointer-events-none fixed inset-0 z-10 h-full w-full"
+        ref="canvasRef"
+      />
+    </div>
+  </StructureScroller>
 </template>

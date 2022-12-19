@@ -12,7 +12,7 @@ export class GlitchFigure extends Figure {
   uniforms?: {
     uTime: { value: number };
     uImage: { value: THREE.Texture };
-    uImageHover: { value: THREE.Texture };
+    uImageTwo: { value: THREE.Texture };
     uResolution: { value: THREE.Vector2 };
     uGlitchColorOffset: { value: number };
     uGlitchPower: { value: number };
@@ -48,7 +48,7 @@ export class GlitchFigure extends Figure {
   setUniforms() {
     this.uniforms = {
       uImage: { value: null },
-      uImageHover: { value: null },
+      uImageTwo: { value: null },
       uTime: { value: 0 },
       uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
       uGlitchColorOffset: { value: 0.03 },

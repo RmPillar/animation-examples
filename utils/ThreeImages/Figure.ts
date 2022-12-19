@@ -93,10 +93,6 @@ export class Figure {
       },
     });
 
-    // this.material = new THREE.MeshBasicMaterial({
-    //   map: this.texture,
-    // });
-
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.position.set(this.offset.x, this.offset.y, 0);
     this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);

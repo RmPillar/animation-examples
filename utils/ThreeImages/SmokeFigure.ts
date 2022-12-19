@@ -65,7 +65,7 @@ export class SmokeFigure extends Figure {
   addToGui() {
     if (!this.gui || !this.uniforms) return;
 
-    const folder = this.gui.addFolder("smoke");
+    const folder = this.gui.addFolder("Smoke");
 
     folder.add(this, "cursorSize", 0, 0.1, 0.001).name("Cursor Size");
 
