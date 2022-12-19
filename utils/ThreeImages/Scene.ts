@@ -4,77 +4,48 @@ import { GloopFigure } from "./GloopFigure";
 import { RevealFigure } from "./RevealFigure";
 import { ShapeFigure } from "./ShapeFigure";
 
-import gloopFragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
-import gloopVertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
-
-import revealFragmentShader from "~/shaders/ThreeImage/reveal/fragment.glsl";
-import revealVertexShader from "~/shaders/ThreeImage/reveal/vertex.glsl";
-
-import shapeFragmentShader from "~/shaders/ThreeImage/shape/fragment.glsl";
-import shapeVertexShader from "~/shaders/ThreeImage/shape/vertex.glsl";
-
 import * as dat from "lil-gui";
 
 export class Scene {
   canvas: HTMLCanvasElement;
-  images: HTMLImageElement[];
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   camera: THREE.PerspectiveCamera;
 
-  figures: (GloopFigure | RevealFigure | ShapeFigure)[] = [];
+  images: NodeListOf<HTMLImageElement>;
+  figures: (GloopFigure | RevealFigure | ShapeFigure)[];
 
+  sizes: {
+    width: number;
+    height: number;
+  };
+  scrollY: number;
   gui: dat.GUI;
 
-  figureClasses: (
-    | typeof GloopFigure
-    | typeof RevealFigure
-    | typeof ShapeFigure
-  )[];
-  shaders: {
-    vertex: string;
-    fragment: string;
-  }[];
-
-  constructor(el: HTMLCanvasElement, images: HTMLImageElement[]) {
+  constructor(el: HTMLCanvasElement) {
     this.canvas = el;
-    this.images = images;
+
+    this.images = document.querySelectorAll(".three-image");
+    this.figures = [];
+
+    this.sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+
+    this.scrollY = 0;
 
     this.gui = new dat.GUI();
-
-    this.figureClasses = [GloopFigure, ShapeFigure, RevealFigure];
-
-    this.shaders = [
-      {
-        vertex: gloopVertexShader,
-        fragment: gloopFragmentShader,
-      },
-
-      {
-        vertex: shapeVertexShader,
-        fragment: shapeFragmentShader,
-      },
-      {
-        vertex: revealVertexShader,
-        fragment: revealFragmentShader,
-      },
-    ];
 
     if (!this.canvas) return;
 
     this.initScene();
     this.initCamera();
 
-    this.figures = this.images.map((image, index) => {
-      return new this.figureClasses[index](
-        this.scene,
-        image,
-        this.shaders[index].vertex,
-        this.shaders[index].fragment,
-        this.gui
-      );
-    });
+    this.initFigures();
+
+    this.initScroller();
 
     this.update();
   }
@@ -110,12 +81,37 @@ export class Scene {
     this.camera.position.set(0, 0, 800);
   }
 
+  initFigures() {
+    this.figures = Array.from(this.images).map((image: HTMLImageElement) => {
+      const effect = image.dataset.effect;
+      const FigureClass =
+        effect === "gloop"
+          ? GloopFigure
+          : effect === "reveal"
+          ? RevealFigure
+          : ShapeFigure;
+
+      return new FigureClass(this.scene, image, this.gui);
+    });
+  }
+
+  initScroller() {
+    this.scrollY = window.scrollY;
+
+    window.addEventListener("scroll", () => {
+      this.scrollY = window.scrollY;
+    });
+  }
+
   update() {
     this.renderer.render(this.scene, this.camera);
 
     this.figures.forEach((figure) => {
       figure.update();
     });
+
+    // Animate Camera
+    this.camera.position.y = -this.scrollY;
 
     requestAnimationFrame(this.update.bind(this));
   }

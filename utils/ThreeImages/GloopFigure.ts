@@ -5,6 +5,9 @@ import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
+import fragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
+import vertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
+
 export class GloopFigure extends Figure {
   uniforms?: {
     uTime: { value: number };
@@ -21,13 +24,7 @@ export class GloopFigure extends Figure {
 
   mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
 
-  constructor(
-    scene: THREE.Scene,
-    image: HTMLImageElement,
-    vertexShader: string,
-    fragmentShader: string,
-    gui: dat.GUI
-  ) {
+  constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
 
     if (!this.scene || !this.imageEl) return;

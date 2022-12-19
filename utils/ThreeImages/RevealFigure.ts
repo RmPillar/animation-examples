@@ -5,6 +5,9 @@ import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
+import fragmentShader from "~/shaders/ThreeImage/reveal/fragment.glsl";
+import vertexShader from "~/shaders/ThreeImage/reveal/vertex.glsl";
+
 export class RevealFigure extends Figure {
   uniforms?: {
     uImage: { value: THREE.Texture };
@@ -16,13 +19,7 @@ export class RevealFigure extends Figure {
     uRatio: { value: number };
   };
 
-  constructor(
-    scene: THREE.Scene,
-    image: HTMLImageElement,
-    vertexShader: string,
-    fragmentShader: string,
-    gui: dat.GUI
-  ) {
+  constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
 
     if (!this.scene || !this.imageEl) return;
