@@ -23,6 +23,7 @@ export class GloopFigure extends Figure {
   };
 
   mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
+  cursorSize: number = 0.04;
 
   constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
@@ -33,7 +34,9 @@ export class GloopFigure extends Figure {
 
     this.initFigure(this.uniforms);
 
-    window.addEventListener("mousemove", this.onMouseMove.bind(this));
+    this.imageEl.addEventListener("mousemove", this.onMouseMove.bind(this));
+    this.imageEl.addEventListener("mouseenter", this.onMouseEnter.bind(this));
+    this.imageEl.addEventListener("mouseleave", this.onMouseLeave.bind(this));
 
     this.addToGui();
   }
@@ -44,7 +47,7 @@ export class GloopFigure extends Figure {
       uImageHover: { value: null },
       uMouse: { value: this.mouse },
       uTime: { value: 0 },
-      uSize: { value: 0.04 },
+      uSize: { value: 0 },
       uNoise: { value: 10.0 },
       uNoiseSpeed: { value: 0.2 },
       uBlur: { value: 0.1 },
@@ -77,6 +80,24 @@ export class GloopFigure extends Figure {
     gsap.to(this.mouse, {
       x: (e.clientX / window.innerWidth) * 2 - 1,
       y: -(e.clientY / window.innerHeight) * 2 + 1,
+    });
+  }
+
+  onMouseEnter() {
+    if (!this.uniforms) return;
+
+    gsap.to(this.uniforms?.uSize, {
+      value: this.cursorSize,
+      duration: 0.5,
+    });
+  }
+
+  onMouseLeave() {
+    if (!this.uniforms) return;
+
+    gsap.to(this.uniforms?.uSize, {
+      value: 0,
+      duration: 0.5,
     });
   }
 

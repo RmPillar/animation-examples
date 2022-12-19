@@ -1,4 +1,5 @@
 uniform vec2 uResolution;
+
 uniform float uTime;
 uniform float uRatio;
 uniform float uGlitchColorOffset;
@@ -9,6 +10,7 @@ uniform float uGlitchBlockSize;
 uniform float uGlitchXOffset;
 uniform float uGlitchYOffset;
 uniform float uEnableGlitch;
+
 uniform sampler2D uImage;
 
 varying vec2 vUv;
@@ -30,8 +32,8 @@ void main() {
 
   // Offset red and blue color channels
   vec4 pixelColor = texture2D(uImage, uv);
-	pixelColor.r = mix(pixelColor.r, texture2D(uImage, uv + vec2(uGlitchColorOffset, 0.0)).r,	uEnableGlitch);
-	pixelColor.b = mix(pixelColor.b, texture2D(uImage, uv + vec2(-uGlitchColorOffset, 0.0 )).b,	uEnableGlitch);
+	pixelColor.r = mix(pixelColor.r, texture2D(uImage, uv + vec2(uGlitchColorOffset * random(uTime), 0.0)).r ,	uEnableGlitch);
+	pixelColor.b = mix(pixelColor.b, texture2D(uImage, uv + vec2(-uGlitchColorOffset * random(uTime), 0.0 )).b ,	uEnableGlitch);
 
   gl_FragColor =  pixelColor;
 }

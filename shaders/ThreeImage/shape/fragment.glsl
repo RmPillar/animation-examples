@@ -2,6 +2,7 @@ uniform float uBlur;
 uniform float uTime;
 uniform float uHoverProgress;
 uniform float uRatio;
+uniform float uSize;
 
 uniform vec2 uMouse;
 uniform vec2 uResolution;
@@ -30,7 +31,7 @@ void main() {
   // Create shape mask
   vec2 shapeUv = (st + mouse) * 8.0;
   shapeUv *= 1.5 * 0.8;
-  shapeUv /= 1.0;
+  shapeUv /= uSize;
   shapeUv += vec2(0.5);
 
   vec4 shape = texture2D(uImageShape, shapeUv);

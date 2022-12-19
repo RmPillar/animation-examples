@@ -59,18 +59,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <StructureScroller>
-    <div class="flex flex-col gap-y-164 bg-slate-500 py-100">
-      <ThreeImagesImageContent
-        :section="section"
-        v-for="(section, index) in imageContentData"
-        :key="index"
-      />
-      <ThreeImagesWidescreenImage :section="widescreenImageData" />
-      <canvas
-        class="pointer-events-none fixed inset-0 z-10 h-full w-full"
-        ref="canvasRef"
-      />
-    </div>
-  </StructureScroller>
+  <div class="flex flex-col gap-y-164 bg-slate-500 py-100">
+    <ThreeImagesImageContent
+      :section="section"
+      v-for="(section, index) in imageContentData"
+      :key="index"
+    />
+    <ThreeImagesWidescreenImage :section="widescreenImageData" />
+    <canvas
+      class="pointer-events-none fixed inset-0 z-10 h-full w-full"
+      ref="canvasRef"
+    />
+  </div>
 </template>

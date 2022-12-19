@@ -51,7 +51,7 @@ export class GlitchFigure extends Figure {
       uImageHover: { value: null },
       uTime: { value: 0 },
       uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
-      uGlitchColorOffset: { value: 0.01 },
+      uGlitchColorOffset: { value: 0.03 },
       uGlitchPower: { value: 0.03 },
       uGlitchBlockSize: { value: 30.5 },
       uGlitchXOffset: { value: 1.0 },
