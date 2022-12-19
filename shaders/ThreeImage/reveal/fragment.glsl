@@ -107,12 +107,12 @@ void main() {
   uv.y *= uRatio;
   uv.y -= (0.5 - (1. / uRatio) * 0.5) * uRatio;
 
-  float offX = uv.x + sin(uv.y + uTime * 0.1);
+  float offX = uv.x + sin(uv.y + uTime * 0.2);
   float offY = uv.y - (uTime * 0.1) - (cos(uTime * (0.1 / 100.0)) * 0.1);
 
-  float n = snoise3(vec3(offX, offY, uTime * 0.1) * 10.0) / 10.0;
+  float n = snoise3(vec3(offX, offY, uTime * 0.1) * 20.0) / 10.0;
 
-  float mask = step(uHoverProgress, ((uv.x + uv.y) / 2.0) + n);
+  float mask = step(uHoverProgress, uv.x + n);
 
   vec4 image = texture2D(uImage, uv);  
   vec4 imageHover = texture2D(uImageHover, uv);

@@ -38,13 +38,16 @@ export class RevealFigure extends Figure {
   }
 
   setUniforms() {
+    console.log(this.imageEl.offsetWidth / this.imageEl.offsetHeight);
     this.uniforms = {
       uImage: { value: null },
       uImageHover: { value: null },
       uBlur: { value: 0.1 },
       uTime: { value: 0 },
       uHoverProgress: { value: -0.1 },
-      uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
+      uRatio: {
+        value: 1,
+      },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
@@ -64,8 +67,8 @@ export class RevealFigure extends Figure {
 
     gsap.to(this.uniforms?.uHoverProgress, {
       value: 1.1,
-      duration: 0.7,
-      ease: "power1.inOut",
+      duration: 1.2,
+      ease: "power2.inOut",
     });
   }
 
@@ -74,8 +77,8 @@ export class RevealFigure extends Figure {
 
     gsap.to(this.uniforms?.uHoverProgress, {
       value: -0.1,
-      duration: 0.7,
-      ease: "power1.inOut",
+      duration: 1.2,
+      ease: "power2.inOut",
     });
   }
 

@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { GloopFigure } from "./GloopFigure";
 import { RevealFigure } from "./RevealFigure";
+import { ShapeFigure } from "./ShapeFigure";
 
 import gloopFragmentShader from "~/shaders/ThreeImage/gloop/fragment.glsl";
 import gloopVertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
@@ -9,53 +10,71 @@ import gloopVertexShader from "~/shaders/ThreeImage/gloop/vertex.glsl";
 import revealFragmentShader from "~/shaders/ThreeImage/reveal/fragment.glsl";
 import revealVertexShader from "~/shaders/ThreeImage/reveal/vertex.glsl";
 
+import shapeFragmentShader from "~/shaders/ThreeImage/shape/fragment.glsl";
+import shapeVertexShader from "~/shaders/ThreeImage/shape/vertex.glsl";
+
 import * as dat from "lil-gui";
 
 export class Scene {
   canvas: HTMLCanvasElement;
-  image: HTMLImageElement;
-  imageTwo: HTMLImageElement;
+  images: HTMLImageElement[];
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   camera: THREE.PerspectiveCamera;
 
-  gloopFigure?: GloopFigure;
-  revealFigure?: RevealFigure;
+  figures: (GloopFigure | RevealFigure | ShapeFigure)[] = [];
 
   gui: dat.GUI;
 
-  constructor(
-    el: HTMLCanvasElement,
-    image: HTMLImageElement,
-    imageTwo: HTMLImageElement
-  ) {
+  figureClasses: (
+    | typeof GloopFigure
+    | typeof RevealFigure
+    | typeof ShapeFigure
+  )[];
+  shaders: {
+    vertex: string;
+    fragment: string;
+  }[];
+
+  constructor(el: HTMLCanvasElement, images: HTMLImageElement[]) {
     this.canvas = el;
-    this.image = image;
-    this.imageTwo = imageTwo;
+    this.images = images;
 
     this.gui = new dat.GUI();
+
+    this.figureClasses = [GloopFigure, ShapeFigure, RevealFigure];
+
+    this.shaders = [
+      {
+        vertex: gloopVertexShader,
+        fragment: gloopFragmentShader,
+      },
+
+      {
+        vertex: shapeVertexShader,
+        fragment: shapeFragmentShader,
+      },
+      {
+        vertex: revealVertexShader,
+        fragment: revealFragmentShader,
+      },
+    ];
 
     if (!this.canvas) return;
 
     this.initScene();
     this.initCamera();
 
-    this.gloopFigure = new GloopFigure(
-      this.scene,
-      this.image,
-      gloopVertexShader,
-      gloopFragmentShader,
-      this.gui
-    );
-
-    this.revealFigure = new RevealFigure(
-      this.scene,
-      this.imageTwo,
-      revealVertexShader,
-      revealFragmentShader,
-      this.gui
-    );
+    this.figures = this.images.map((image, index) => {
+      return new this.figureClasses[index](
+        this.scene,
+        image,
+        this.shaders[index].vertex,
+        this.shaders[index].fragment,
+        this.gui
+      );
+    });
 
     this.update();
   }
@@ -94,8 +113,9 @@ export class Scene {
   update() {
     this.renderer.render(this.scene, this.camera);
 
-    if (this.gloopFigure) this.gloopFigure.update();
-    if (this.revealFigure) this.revealFigure.update();
+    this.figures.forEach((figure) => {
+      figure.update();
+    });
 
     requestAnimationFrame(this.update.bind(this));
   }

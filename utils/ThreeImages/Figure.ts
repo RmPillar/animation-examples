@@ -15,6 +15,7 @@ export class Figure {
 
   texture: THREE.Texture;
   hoverTexture: THREE.Texture;
+  shapeTexture: THREE.Texture;
 
   geometry: THREE.PlaneGeometry;
   material: THREE.MeshBasicMaterial;
@@ -39,13 +40,19 @@ export class Figure {
     this.gui = gui;
   }
 
-  async initFigure(uniforms) {
+  initFigure(uniforms) {
     this.loader = new THREE.TextureLoader();
 
-    this.texture = await this.loader.load(this.imageEl.src);
-    this.hoverTexture = await this.loader.load(
+    this.texture = this.loader.load(this.imageEl.src);
+    this.hoverTexture = this.loader.load(
       this.imageEl.getAttribute("data-hover")
     );
+
+    if (this.imageEl.getAttribute("data-shape") !== "") {
+      this.shapeTexture = this.loader.load(
+        this.imageEl.getAttribute("data-shape")
+      );
+    }
 
     this.sizes = new THREE.Vector2(0, 0);
     this.offset = new THREE.Vector2(0, 0);
@@ -74,6 +81,7 @@ export class Figure {
       ...uniforms,
       uImage: { value: this.texture },
       uImageHover: { value: this.hoverTexture },
+      uImageShape: { value: this.shapeTexture },
     };
 
     this.material = new THREE.ShaderMaterial({

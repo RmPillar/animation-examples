@@ -1,41 +1,72 @@
 <script setup lang="ts">
 import { Scene } from "~~/utils/ThreeImages/Scene";
 const canvasRef = ref(null);
-const imageRef = ref(null);
-const imageTwoRef = ref(null);
+const sectionOneImageRef = ref([]);
+const sectionTwoImageRef = ref(null);
 
 const sceneRef = ref<Scene | null>(null);
 
-onMounted(() => {
-  if (!canvasRef.value || !imageRef.value || !imageTwoRef.value) return;
+const sectionOne = [
+  {
+    src: "/images/spiderman-001.webp",
+    hover: "/images/spiderman-003.webp",
+    shape: "",
+  },
+  {
+    src: "/images/spiderman-002.webp",
+    hover: "/images/spiderman-003.webp",
+    shape: "/images/spiderman-logo.jpg",
+  },
+  // {
+  //   src: "/images/spiderman-004.webp",
+  //   hover: "/images/spiderman-005.webp",
+  //   shape: "",
+  // },
+];
 
-  sceneRef.value = new Scene(
-    canvasRef.value,
-    imageRef.value,
-    imageTwoRef.value
-  );
+onMounted(() => {
+  if (
+    !canvasRef.value ||
+    !sectionOneImageRef.value ||
+    !sectionTwoImageRef.value
+  )
+    return;
+
+  sceneRef.value = new Scene(canvasRef.value, [
+    ...sectionOneImageRef.value,
+    sectionTwoImageRef.value,
+  ]);
 });
 </script>
 
 <template>
-  <div class="flex h-screen w-screen items-center justify-center bg-slate-500">
-    <div class="relative mr-100 aspect-[3/4] w-10/12 sm:w-8/12 lg:w-3/12">
-      <img
-        data-src="/images/spiderman-001.webp"
-        data-hover="/images/spiderman-003.webp"
-        src="/images/spiderman-001.webp"
-        class="h-full w-full object-cover opacity-0"
-        ref="imageRef"
-      />
-    </div>
-    <div class="relative aspect-[3/4] w-10/12 sm:w-8/12 lg:w-3/12">
-      <img
-        data-src="/images/spiderman-002.webp"
-        data-hover="/images/spiderman-003.webp"
-        src="/images/spiderman-002.webp"
-        class="h-full w-full object-cover opacity-0"
-        ref="imageTwoRef"
-      />
+  <div class="bg-slate-500 py-100">
+    <div class="w-full max-w-[1660px] px-100">
+      <div class="w-full">
+        <img
+          data-src="/images/before.jpeg"
+          data-hover="/images/after.jpeg"
+          src="/images/before.jpeg"
+          class="h-full w-full object-cover opacity-0"
+          ref="sectionTwoImageRef"
+        />
+      </div>
+      <div class="flex items-center justify-center space-x-[100px]">
+        <div
+          class="relative aspect-[3/4] h-[666px] w-[500px]"
+          v-for="(image, index) in sectionOne"
+          :key="index"
+        >
+          <img
+            :data-src="image.src"
+            :data-hover="image.hover"
+            :data-shape="image.shape"
+            :src="image.src"
+            class="h-full w-full object-cover opacity-0"
+            ref="sectionOneImageRef"
+          />
+        </div>
+      </div>
     </div>
     <canvas
       class="pointer-events-none fixed inset-0 z-10 h-full w-full"
