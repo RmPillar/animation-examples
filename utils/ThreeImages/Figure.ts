@@ -99,4 +99,11 @@ export class Figure {
 
     this.scene.add(this.mesh);
   }
+
+  resize() {
+    this.getSizes();
+
+    this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
+    this.mesh.position.set(this.offset.x, this.offset.y, 0);
+  }
 }

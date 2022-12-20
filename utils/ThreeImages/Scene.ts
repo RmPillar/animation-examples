@@ -6,16 +6,17 @@ import { ShapeFigure } from "./ShapeFigure";
 import { GlitchFigure } from "./GlitchFigure";
 
 import * as dat from "lil-gui";
-import Lenis from "@studio-freight/lenis";
 import ScrollSmoother from "gsap/dist/ScrollSmoother";
-// import LocomotiveScroll from "locomotive-scroll";
-// import ASScroll from "@ashthornton/asscroll";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { gsap } from "gsap";
+
+let resizeTicking;
 
 export class Scene {
   canvas: HTMLCanvasElement;
-  scroller: Lenis;
-  // scroller: LocomotiveScroll;
-  // scroller: ASScroll;
+  scroller: ScrollSmoother;
+
+  scrollTrigger?: ScrollTrigger;
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
@@ -28,13 +29,13 @@ export class Scene {
     width: number;
     height: number;
   };
+
   scrollY: number;
   gui: dat.GUI;
 
-  // constructor(el: HTMLCanvasElement, scroller: LocomotiveScroll) {
-  constructor(el: HTMLCanvasElement, scroller: Lenis) {
+  constructor(el: HTMLCanvasElement) {
     this.canvas = el;
-    this.scroller = scroller;
+    this.scroller = ScrollSmoother.get();
 
     this.images = document.querySelectorAll(".three-image");
     this.figures = [];
@@ -44,9 +45,13 @@ export class Scene {
       height: window.innerHeight,
     };
 
+    this.windowAspectRatio = this.sizes.width / this.sizes.height;
+    this.maxScroll = ScrollTrigger.maxScroll(window);
+
     this.scrollY = 0;
 
     this.gui = new dat.GUI();
+    this.gui.close();
 
     if (!this.canvas) return;
 
@@ -57,7 +62,11 @@ export class Scene {
 
     this.initScroller();
 
-    this.update();
+    gsap.ticker.add(this.update.bind(this));
+
+    window.addEventListener("resize", this.requestResizeTick.bind(this), {
+      passive: true,
+    });
   }
 
   initScene() {
@@ -110,22 +119,65 @@ export class Scene {
   initScroller() {
     if (!this.scroller) return;
 
-    // @ts-ignore
-    this.scroller.on("scroll", ({ scroll }) => {
-      this.scrollY = scroll;
+    if (this.scrollTrigger) {
+      this.scrollTrigger.kill();
+    }
+
+    const tween = gsap.to(this.camera.position, {
+      y: -ScrollTrigger.maxScroll(window),
+      ease: "none",
     });
+
+    this.scrollTrigger = ScrollTrigger.create({
+      trigger: ".three-images-wrapper",
+      start: "top top",
+      end: "bottom bottom",
+      markers: true,
+      animation: tween,
+      scrub: true,
+    });
+  }
+
+  updateCameraPosition() {
+    this.camera.position.y = this.scroller.scrollTop;
+  }
+
+  requestResizeTick() {
+    // @ts-ignore
+    clearTimeout(resizeTicking);
+    resizeTicking = setTimeout(() => {
+      this.resize();
+    }, 100);
   }
 
   update() {
     this.renderer.render(this.scene, this.camera);
 
+    // console.log(this.camera.position.y, "><<<<");
+
     this.figures.forEach((figure) => {
       figure.update();
     });
+  }
 
-    // Animate Camera
-    this.camera.position.y = -this.scrollY;
+  resize() {
+    console.log(this.camera.position.y, "resize");
+    this.sizes.width = window.innerWidth;
+    this.sizes.height = window.innerHeight;
 
-    requestAnimationFrame(this.update.bind(this));
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    this.camera.aspect = this.sizes.width / this.sizes.height;
+    this.camera.updateProjectionMatrix();
+
+    this.figures.forEach((figure) => {
+      figure.resize();
+    });
+
+    // gsap.set(this.camera.position, { y: -this.scroller.scrollTop() });
+    this.initScroller();
+
+    console.log(this.camera.position.y, "resize 2");
   }
 }

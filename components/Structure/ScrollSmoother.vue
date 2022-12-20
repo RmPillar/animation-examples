@@ -11,9 +11,10 @@ onMounted(() => {
   if (scroller.value) return;
 
   scroller.value = ScrollSmoother.create({
-    smooth: 0, // how long (in seconds) it takes to "catch up" to the native scroll position
+    smooth: 1, // how long (in seconds) it takes to "catch up" to the native scroll position
     ease: "power2.out",
     normalizeScroll: true,
+    ignoreMobileResize: true,
   });
 });
 

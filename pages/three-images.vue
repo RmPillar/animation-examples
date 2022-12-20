@@ -54,24 +54,26 @@ const widescreenImageData = {
 };
 
 onMounted(() => {
-  if (!canvasRef.value || !scrollerRef.value) return;
-  sceneRef.value = new Scene(canvasRef.value, scrollerRef.value.scroller);
+  if (!canvasRef.value) return;
+  sceneRef.value = new Scene(canvasRef.value);
 });
 </script>
 
 <template>
-  <StructureScroller ref="scrollerRef">
-    <div class="flex flex-col gap-y-164 bg-slate-500 py-100">
+  <StructureScrollSmoother>
+    <div
+      class="three-images-wrapper flex flex-col gap-y-164 bg-slate-500 py-100"
+    >
       <ThreeImagesImageContent
         :section="section"
         v-for="(section, index) in imageContentData"
         :key="index"
       />
       <ThreeImagesWidescreenImage :section="widescreenImageData" />
-      <canvas
-        class="pointer-events-none fixed inset-0 z-10 h-full w-full"
-        ref="canvasRef"
-      />
     </div>
-  </StructureScroller>
+  </StructureScrollSmoother>
+  <canvas
+    class="pointer-events-none fixed inset-0 z-10 h-full w-full"
+    ref="canvasRef"
+  />
 </template>
