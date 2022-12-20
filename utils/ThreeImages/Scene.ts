@@ -7,10 +7,15 @@ import { GlitchFigure } from "./GlitchFigure";
 
 import * as dat from "lil-gui";
 import Lenis from "@studio-freight/lenis";
+import ScrollSmoother from "gsap/dist/ScrollSmoother";
+// import LocomotiveScroll from "locomotive-scroll";
+// import ASScroll from "@ashthornton/asscroll";
 
 export class Scene {
   canvas: HTMLCanvasElement;
   scroller: Lenis;
+  // scroller: LocomotiveScroll;
+  // scroller: ASScroll;
 
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
@@ -26,6 +31,7 @@ export class Scene {
   scrollY: number;
   gui: dat.GUI;
 
+  // constructor(el: HTMLCanvasElement, scroller: LocomotiveScroll) {
   constructor(el: HTMLCanvasElement, scroller: Lenis) {
     this.canvas = el;
     this.scroller = scroller;
@@ -105,7 +111,7 @@ export class Scene {
     if (!this.scroller) return;
 
     // @ts-ignore
-    this.scroller.on("scroll", ({ scroll }: { scroll: number }) => {
+    this.scroller.on("scroll", ({ scroll }) => {
       this.scrollY = scroll;
     });
   }

@@ -8,6 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@ashthornton/asscroll": "^2.0.11",
     "@johh/three-effectcomposer": "^0.1.0",
     "@pixi/filter-glitch": "^5.0.0",
     "@studio-freight/lenis": "^0.2.21",
@@ -15,6 +16,7 @@
     "glslify": "^7.1.1",
     "gsap": "npm:@gsap/business",
     "lil-gui": "^0.17.0",
+    "locomotive-scroll": "^4.1.4",
     "lodash.throttle": "^4.1.1",
     "pixi.js": "^7.0.4",
     "three": "^0.147.0",

@@ -12,7 +12,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <section class="section-imageContent">
+  <section class="section-imageContent" data-scroll-section>
     <div class="container">
       <div>
         <img

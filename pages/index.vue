@@ -3,14 +3,6 @@ const router = useRouter();
 
 const getRouteName = (route) => {
   if (route.name === "index") return "Home";
-  console.log(
-    route.name
-      .split("-")
-      .map((name) => {
-        return name.charAt(0).toUpperCase() + name.substring(1);
-      })
-      .join(" ")
-  );
 
   return route.name
     .split("-")

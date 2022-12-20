@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Scene } from "~~/utils/ThreeImages/Scene";
 import StructureScroller from "~~/components/Structure/Scroller.vue";
+import { ImageContentDataType } from "~~/types/sections";
+
 const canvasRef = ref(null);
 const scrollerRef = ref<typeof StructureScroller | null>(null);
 
 const sceneRef = ref<Scene | null>(null);
 
-const imageContentData = [
+const imageContentData: ImageContentDataType[] = [
   {
     heading: "Lorem Ipsum Glitch Title Here",
     body: " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -53,7 +55,6 @@ const widescreenImageData = {
 
 onMounted(() => {
   if (!canvasRef.value || !scrollerRef.value) return;
-  console.log(scrollerRef.value.scroller);
   sceneRef.value = new Scene(canvasRef.value, scrollerRef.value.scroller);
 });
 </script>

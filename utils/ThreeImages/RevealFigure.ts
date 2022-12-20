@@ -35,7 +35,6 @@ export class RevealFigure extends Figure {
   }
 
   setUniforms() {
-    console.log(this.imageEl.offsetWidth / this.imageEl.offsetHeight);
     this.uniforms = {
       uImage: { value: null },
       uImageHover: { value: null },
