@@ -1,27 +1,22 @@
 // @ts-ignore
 import * as THREE from "three";
 import * as dat from "lil-gui";
-import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
-import fragmentShader from "~/shaders/ThreeImage/shape/fragment.glsl";
-import vertexShader from "~/shaders/ThreeImage/shape/vertex.glsl";
+import { gsap } from "gsap";
 
-export class ShapeFigure extends Figure {
+import fragmentShader from "~/shaders/ThreeShaders/snap/fragment.glsl";
+import vertexShader from "~/shaders/ThreeShaders/snap/vertex.glsl";
+
+export class SnapFigure extends Figure {
   uniforms?: {
     uTime: { value: number };
     uImage: { value: THREE.Texture };
-    uImageHover: { value: THREE.Texture };
-    uImageShape: { value: THREE.Texture };
-    uMouse: { value: THREE.Vector2 };
-    uSize: { value: number };
+    uHoverProgress: { value: number };
     uResolution: { value: THREE.Vector2 };
     uRatio: { value: number };
   };
-
-  mouse: THREE.Vector2 = new THREE.Vector2(0, 0);
-  cursorSize: number = 1.0;
 
   constructor(scene: THREE.Scene, image: HTMLImageElement, gui: dat.GUI) {
     super(scene, image, vertexShader, fragmentShader, gui);
@@ -32,7 +27,6 @@ export class ShapeFigure extends Figure {
 
     this.initFigure(this.uniforms);
 
-    this.imageEl.addEventListener("mousemove", this.onMouseMove.bind(this));
     this.imageEl.addEventListener("mouseenter", this.onMouseEnter.bind(this));
     this.imageEl.addEventListener("mouseleave", this.onMouseLeave.bind(this));
   }
@@ -40,11 +34,8 @@ export class ShapeFigure extends Figure {
   setUniforms() {
     this.uniforms = {
       uImage: { value: null },
-      uImageHover: { value: null },
-      uImageShape: { value: null },
-      uMouse: { value: this.mouse },
-      uSize: { value: 0.01 },
       uTime: { value: 0 },
+      uHoverProgress: { value: -0.1 },
       uRatio: { value: this.imageEl.offsetWidth / this.imageEl.offsetHeight },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -52,33 +43,25 @@ export class ShapeFigure extends Figure {
     };
   }
 
-  onMouseMove(e: MouseEvent) {
-    gsap.to(this.mouse, {
-      x: (e.clientX / window.innerWidth) * 2 - 1,
-      y: -(e.clientY / window.innerHeight) * 2 + 1,
-    });
-  }
-
   onMouseEnter() {
     if (!this.uniforms) return;
-    gsap.to(this.uniforms?.uSize, {
-      value: this.cursorSize,
-      duration: 0.5,
+
+    gsap.to(this.uniforms?.uHoverProgress, {
+      value: 1.0,
+      duration: 2.0,
+      ease: "power2.inOut",
     });
   }
 
   onMouseLeave() {
     if (!this.uniforms) return;
 
-    gsap.to(this.uniforms?.uSize, {
-      value: 0.01,
-      duration: 0.5,
+    gsap.to(this.uniforms?.uHoverProgress, {
+      value: 0.0,
+      duration: 2.0,
+      ease: "power2.inOut",
     });
   }
 
-  update() {
-    if (!this.uniforms) return;
-
-    this.uniforms.uTime.value += 0.01;
-  }
+  update() {}
 }

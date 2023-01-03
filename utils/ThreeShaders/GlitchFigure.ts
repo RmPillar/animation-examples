@@ -5,8 +5,8 @@ import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
-import fragmentShader from "~/shaders/ThreeImage/glitch/fragment.glsl";
-import vertexShader from "~/shaders/ThreeImage/glitch/vertex.glsl";
+import fragmentShader from "~/shaders/ThreeShaders/glitch/fragment.glsl";
+import vertexShader from "~/shaders/ThreeShaders/glitch/vertex.glsl";
 
 export class GlitchFigure extends Figure {
   uniforms?: {

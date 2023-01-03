@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Scene } from "~~/utils/ThreeImages/Scene";
+import { Scene } from "~~/utils/ThreeShaders/Scene";
 import StructureScroller from "~~/components/Structure/Scroller.vue";
 import { ImageContentDataType } from "~~/types/sections";
 
@@ -10,6 +10,17 @@ const sceneRef = ref<Scene | null>(null);
 
 const imageContentData: ImageContentDataType[] = [
   {
+    heading: "Lorem Ipsum Snap Title Here",
+    body: " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image: {
+      src: "/images/spiderman-001.webp",
+      hover: "/images/spiderman-003.webp",
+      shape: "",
+      effect: "snap",
+    },
+    imageSide: "left",
+  },
+  {
     heading: "Lorem Ipsum Glitch Title Here",
     body: " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: {
@@ -18,7 +29,7 @@ const imageContentData: ImageContentDataType[] = [
       shape: "",
       effect: "glitch",
     },
-    imageSide: "left",
+    imageSide: "right",
   },
   {
     heading: "Lorem Ipsum Title Here",
@@ -29,7 +40,7 @@ const imageContentData: ImageContentDataType[] = [
       shape: "/images/spiderman-logo.jpg",
       effect: "shape",
     },
-    imageSide: "right",
+    imageSide: "left",
   },
   {
     heading: "Lorem Ipsum Title Here",
@@ -40,7 +51,7 @@ const imageContentData: ImageContentDataType[] = [
       shape: "",
       effect: "smoke",
     },
-    imageSide: "left",
+    imageSide: "right",
   },
 ];
 

@@ -19,7 +19,7 @@ export type ImageContentDataType = {
     src: string;
     hover: string;
     shape: string;
-    effect: "smoke" | "reveal" | "shape" | "glitch";
+    effect: "smoke" | "reveal" | "shape" | "glitch" | "snap";
   };
   imageSide: "left" | "right";
 };

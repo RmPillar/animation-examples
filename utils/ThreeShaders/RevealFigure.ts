@@ -5,8 +5,8 @@ import { gsap } from "gsap";
 
 import { Figure } from "./Figure";
 
-import fragmentShader from "~/shaders/ThreeImage/reveal/fragment.glsl";
-import vertexShader from "~/shaders/ThreeImage/reveal/vertex.glsl";
+import fragmentShader from "~/shaders/ThreeShaders/reveal/fragment.glsl";
+import vertexShader from "~/shaders/ThreeShaders/reveal/vertex.glsl";
 
 export class RevealFigure extends Figure {
   uniforms?: {

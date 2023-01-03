@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as THREE from "three";
 
-import vertexShader from "~/shaders/ThreeImage/smoke/vertex.glsl";
+import vertexShader from "~/shaders/ThreeShaders/smoke/vertex.glsl";
 
 import * as dat from "lil-gui";
 
@@ -54,15 +54,15 @@ export class Figure {
       );
     }
 
-    this.sizes = new THREE.Vector2(0, 0);
-    this.offset = new THREE.Vector2(0, 0);
-
     this.getSizes();
 
     this.createMesh(uniforms);
   }
 
   getSizes() {
+    this.sizes = new THREE.Vector2(0, 0);
+    this.offset = new THREE.Vector2(0, 0);
+
     const { width, height, top, left } = this.imageEl.getBoundingClientRect();
 
     this.sizes.set(width, height);

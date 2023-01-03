@@ -4,13 +4,14 @@ import { SmokeFigure } from "./SmokeFigure";
 import { RevealFigure } from "./RevealFigure";
 import { ShapeFigure } from "./ShapeFigure";
 import { GlitchFigure } from "./GlitchFigure";
+import { SnapFigure } from "./SnapFigure";
 
 import * as dat from "lil-gui";
 import ScrollSmoother from "gsap/dist/ScrollSmoother";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { gsap } from "gsap";
 
-let resizeTicking;
+let resizeTicking: NodeJS.Timeout;
 
 export class Scene {
   canvas: HTMLCanvasElement;
@@ -23,12 +24,20 @@ export class Scene {
   camera: THREE.PerspectiveCamera;
 
   images: NodeListOf<HTMLImageElement>;
-  figures: (SmokeFigure | RevealFigure | ShapeFigure)[];
+  figures: (
+    | SmokeFigure
+    | RevealFigure
+    | ShapeFigure
+    | SnapFigure
+    | GlitchFigure
+  )[];
 
   sizes: {
     width: number;
     height: number;
   };
+  windowAspectRatio: number;
+  maxScroll: number;
 
   scrollY: number;
   gui: dat.GUI;
@@ -110,6 +119,8 @@ export class Scene {
           ? RevealFigure
           : effect === "glitch"
           ? GlitchFigure
+          : effect === "snap"
+          ? SnapFigure
           : ShapeFigure;
 
       return new FigureClass(this.scene, image, this.gui);
