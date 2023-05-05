@@ -1,8 +1,6 @@
 // @ts-ignore
 import * as THREE from "three";
 
-import vertexShader from "~/shaders/ThreeShaders/smoke/vertex.glsl";
-
 import * as dat from "lil-gui";
 
 export class Figure {
@@ -86,7 +84,7 @@ export class Figure {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: newUniforms,
-      vertexShader: vertexShader,
+      vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader,
       defines: {
         PR: window.devicePixelRatio.toFixed(1),
@@ -97,7 +95,7 @@ export class Figure {
     this.mesh.position.set(this.offset.x, this.offset.y, 0);
     this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
 
-    this.scene.add(this.mesh);
+    // this.scene.add(this.mesh);
   }
 
   resize() {

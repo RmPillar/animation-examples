@@ -10,8 +10,8 @@ export class SplitText {
     tag: string;
     doubleWrap: boolean;
   };
-  innerEl: HTMLSpanElement;
-  textContent: string;
+  innerEl: undefined | HTMLSpanElement;
+  textContent: string | null;
   lineIndex: undefined | number;
   lineTop: undefined | number;
   characterIndex: number;
@@ -24,7 +24,7 @@ export class SplitText {
     chars: HTMLElement[];
   }[];
 
-  constructor(el, options) {
+  constructor(el: HTMLElement, options: any) {
     this.el = el;
     this.options = {
       type: "word",
@@ -57,6 +57,10 @@ export class SplitText {
   splitText() {
     // Get split types
     this.getSplitType();
+
+    // Set element whitespace to pre-wrap to maintain line breaks and whitespace
+    this.el.style.whiteSpace = "pre-wrap";
+
     // If options.type is equal to char, splitByChar. Else splitbyWord
     if (this.splitType.includes("char")) {
       this.splitByChar();
@@ -71,8 +75,10 @@ export class SplitText {
   }
 
   private splitByWord() {
+    if(!this.el.textContent) return;
     // Get text content from element
     this.textContent = this.el.textContent;
+    // If text content is empty, return
     // Remove text content from element
     this.el.textContent = "";
 
@@ -83,10 +89,26 @@ export class SplitText {
     const splitText = this.textContent.split(this.options.wordDelimiter);
     this.trimWhitespace(splitText);
 
+
     // Loop through splitText array
     splitText.forEach((word, index) => {
+      if(!this.innerEl) return;
+
       // Create span for word
       const node = this.createSpan(word, index, "word", this.options.wordClass);
+
+
+    // Create span for whitespace
+    const whitespaceSpan = this.createSpan(
+      this.options.wordDelimiter,
+      index,
+      "word",
+      'whitespace',
+      false
+      );
+  
+
+      if(!node || !this.innerEl) return
 
       if (this.options.doubleWrap) {
         // Create wrapper span
@@ -97,9 +119,22 @@ export class SplitText {
         wrapperNode.append(node);
         // Append new span to inner text element
         this.innerEl.append(wrapperNode);
+
+        if(whitespaceSpan && index !== splitText.length - 1) {
+          console.log(index, splitText.length - 1)
+          // Append whitespace span to inner text element
+          this.innerEl.append(whitespaceSpan);
+        }
+  
       } else {
         // Append new span to inner text element
         this.innerEl.append(node);
+
+        if(whitespaceSpan && index !== splitText.length - 1) {
+          console.log(index, splitText.length - 1)
+          // Append whitespace span to inner text element
+          this.innerEl.append(whitespaceSpan);
+        }
       }
     });
 
@@ -107,6 +142,8 @@ export class SplitText {
   }
 
   private splitByChar() {
+    if(!this.el.textContent) return;
+
     // Get text content from element
     this.textContent = this.el.textContent;
     // Remove text content from element
@@ -118,6 +155,7 @@ export class SplitText {
     // Split text content by word delimiter and trim whitespace from start and end
     const splitText = this.textContent.split(this.options.wordDelimiter);
     this.trimWhitespace(splitText);
+    
 
     // Loop through splitText array
     splitText.forEach((word, index) => {
@@ -134,8 +172,19 @@ export class SplitText {
       const splitWord = word.split("");
       this.trimWhitespace(splitWord);
 
+
+    // Create span for whitespace
+    const whitespaceSpan = this.createSpan(
+      this.options.wordDelimiter,
+      index,
+      "word",
+      'whitespace',
+      false
+      );
+  
+
       // Loop through split word array
-      splitWord.forEach((char, index) => {
+      splitWord.forEach((char) => {
         // Create span for character
         const charNode = this.createSpan(
           char,
@@ -144,17 +193,29 @@ export class SplitText {
           this.options.charClass
         );
 
-        // Append character span to word span
-        wordNode.append(charNode);
+        if(charNode && wordNode) {
+          // Append character span to word span
+          wordNode.append(charNode);
+        }
       });
-      // Append word span to inner text element
-      this.innerEl.append(wordNode);
+
+      if(wordNode && this.innerEl) {
+        // Append word span to inner text element
+        this.innerEl.append(wordNode);
+
+        if(whitespaceSpan && index !== splitText.length - 1) {
+          // Append whitespace span to inner text element
+          this.innerEl.append(whitespaceSpan);
+        }
+      }
 
       this.wordIndex++;
     });
 
     // Append inner text element to main element
-    this.el.append(this.innerEl);
+    if(this.innerEl) {
+      this.el.append(this.innerEl);
+    }
 
     this.setIndexes();
   }
@@ -163,15 +224,6 @@ export class SplitText {
     // Create span for inner text element
     this.innerEl = document.createElement(this.options.tag);
 
-    // Create styles object for inner text element
-    const innerElStyles = {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: `0px ${this.options.wordGap}`,
-    };
-
-    // Assign styles to inner text element
-    Object.assign(this.innerEl.style, innerElStyles);
     // Append inner text element to main element
     this.el.append(this.innerEl);
   }
@@ -189,11 +241,12 @@ export class SplitText {
   }
 
   private createSpan(
-    text: string,
+    text: string | null,
     index: number,
     type: "word" | "char",
-    className: string
-  ): HTMLSpanElement {
+    className: string,
+    addToArray = true
+  ): HTMLSpanElement | undefined {
     // Create span element
     const node = document.createElement(this.options.tag);
     // Set span display to inline-block
@@ -206,15 +259,17 @@ export class SplitText {
     // node.style.setProperty(`--${type}-index`, index.toString());
 
     // Add element to word or chars array
-    if (type === "word") {
-      this.words.push(node);
-    } else if (type === "char") {
-      this.chars[index].push(node);
+    if (addToArray) {
+      if (type === "word") {
+        this.words.push(node);
+      } else if (type === "char") {
+        this.chars[index].push(node);
+      }
     }
     return node;
   }
 
-  private createWrapperSpan(className) {
+  private createWrapperSpan(className:string) {
     // Create span element
     const node = document.createElement(this.options.tag);
     // Set span display to inline-block
@@ -291,6 +346,7 @@ export class SplitText {
   }
 
   revert() {
+    if(!this.textContent) return 
     // Set element innerHTML to be original textContent
     this.el.innerHTML = this.textContent;
   }

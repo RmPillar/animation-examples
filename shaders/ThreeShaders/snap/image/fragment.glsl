@@ -2,6 +2,7 @@ uniform vec2 uResolution;
 
 uniform float uTime;
 uniform float uRatio;
+uniform float uHoverProgress;
 
 uniform sampler2D uImage;
 
@@ -13,7 +14,7 @@ void main() {
   uv.y *= uRatio;
   uv.y -= (0.5 - (1. / uRatio) * 0.5) * uRatio;
 
-  float mask = 1.0 - step(0.1, ((vUv.x + (vUv.y / 1.2)) / 2.0));
+  float mask = 1.0 - step(uHoverProgress, ((vUv.x + (vUv.y / 1.2)) / 2.0));
 
   vec4 imageTexture = texture2D(uImage, uv);
 

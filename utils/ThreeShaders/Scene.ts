@@ -100,13 +100,22 @@ export class Scene {
   initCamera() {
     const fov = (180 * (2 * Math.atan(window.innerHeight / 2 / 800))) / Math.PI;
 
-    this.camera = new THREE.PerspectiveCamera(
-      fov,
-      window.innerWidth / window.innerHeight,
+    // this.camera = new THREE.PerspectiveCamera(
+    //   fov,
+    //   window.innerWidth / window.innerHeight,
+    //   1,
+    //   1000
+    // );
+
+    this.camera = new THREE.OrthographicCamera(
+      window.innerWidth / -2,
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      window.innerHeight / -2,
       1,
       1000
     );
-    this.camera.position.set(0, 0, 800);
+    this.camera.position.set(0, 0, 1);
   }
 
   initFigures() {
