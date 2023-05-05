@@ -15,10 +15,10 @@ defineExpose({
     class="hidden w-full"
   >
     <defs>
-      <filter id="svgFilter__001" x="0%" y="0%" width="100%" height="100%">
+      <filter id="svgFilter__001">
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.025"
+          baseFrequency="0.01"
           numOctaves="1"
           result="turbulence"
         ></feTurbulence>
@@ -26,7 +26,7 @@ defineExpose({
           in2="turbulence"
           in="SourceGraphic"
           ref="displacementMapRef"
-          scale="100"
+          scale="1000"
           xChannelSelector="R"
           yChannelSelector="G"
         ></feDisplacementMap>
