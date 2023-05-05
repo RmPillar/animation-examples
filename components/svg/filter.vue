@@ -18,7 +18,7 @@ defineExpose({
       <filter id="svgFilter__001">
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.01"
+          baseFrequency="0.025"
           numOctaves="1"
           result="turbulence"
         ></feTurbulence>
@@ -26,7 +26,7 @@ defineExpose({
           in2="turbulence"
           in="SourceGraphic"
           ref="displacementMapRef"
-          scale="1000"
+          scale="100"
           xChannelSelector="R"
           yChannelSelector="G"
         ></feDisplacementMap>
